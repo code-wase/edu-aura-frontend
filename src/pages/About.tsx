@@ -27,7 +27,7 @@ const About = () => {
   ];
 
   const timeline = [
-    { year: '1985', event: 'EduCollege was founded with a vision to provide quality education' },
+    { year: '1985', event: 'ITM College  was founded with a vision to provide quality education' },
     { year: '1992', event: 'Expanded to include engineering and business programs' },
     { year: '2001', event: 'Introduced state-of-the-art computer labs and digital learning' },
     { year: '2010', event: 'Achieved accreditation from national education board' },
@@ -41,7 +41,7 @@ const About = () => {
       <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-5xl font-bold text-white mb-6 animate-fade-in">
-            About EduCollege
+            About ITM College 
           </h1>
           <p className="text-xl text-blue-100 max-w-3xl mx-auto animate-slide-in-left">
             For nearly four decades, we've been committed to providing exceptional education 
@@ -170,7 +170,7 @@ const About = () => {
               <div className="md:w-2/3 p-8 md:p-12">
                 <h2 className="text-3xl font-bold text-gray-900 mb-6">Principal's Message</h2>
                 <p className="text-lg text-gray-600 leading-relaxed mb-6">
-                  "Welcome to EduCollege, where excellence meets opportunity. For nearly four decades, 
+                  "Welcome to ITM College , where excellence meets opportunity. For nearly four decades, 
                   we have been committed to providing our students with an educational experience 
                   that goes beyond textbooks and classrooms."
                 </p>
@@ -181,7 +181,7 @@ const About = () => {
                   their careers."
                 </p>
                 <p className="text-lg text-gray-600 leading-relaxed">
-                  "I invite you to explore all that EduCollege has to offer and join our vibrant 
+                  "I invite you to explore all that ITM College  has to offer and join our vibrant 
                   community of learners, innovators, and future leaders."
                 </p>
                 

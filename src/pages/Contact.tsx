@@ -34,7 +34,7 @@ const Contact = () => {
     {
       icon: Mail,
       title: 'Email',
-      details: ['info@educollege.edu', 'admissions@educollege.edu'],
+      details: ['info@itmcollege .edu', 'admissions@ITM College .edu'],
       color: 'text-purple-600'
     },
     {
@@ -49,25 +49,25 @@ const Contact = () => {
     {
       name: 'Admissions Office',
       phone: '+1 (555) 123-4568',
-      email: 'admissions@educollege.edu',
+      email: 'admissions@ITM College .edu',
       description: 'For questions about applications, requirements, and enrollment.'
     },
     {
       name: 'Academic Affairs',
       phone: '+1 (555) 123-4569',
-      email: 'academics@educollege.edu',
+      email: 'academics@ITM College .edu',
       description: 'For course information, curriculum, and academic policies.'
     },
     {
       name: 'Student Services',
       phone: '+1 (555) 123-4570',
-      email: 'students@educollege.edu',
+      email: 'students@ITM College .edu',
       description: 'For student support, housing, and campus life inquiries.'
     },
     {
       name: 'Financial Aid',
       phone: '+1 (555) 123-4571',
-      email: 'financial@educollege.edu',
+      email: 'financial@ITM College .edu',
       description: 'For scholarships, grants, and financial assistance programs.'
     }
   ];

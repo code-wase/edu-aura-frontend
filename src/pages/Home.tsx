@@ -47,7 +47,7 @@ const Home = () => {
           </h1>
           <p className="text-xl md:text-2xl mb-8 opacity-90 animate-slide-in-left">
             Join thousands of students in their journey towards academic excellence 
-            and professional success at EduCollege.
+            and professional success at ITM College .
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-slide-in-right">
             <Button asChild size="lg" className="bg-white text-blue-600 hover:bg-gray-100">
@@ -95,7 +95,7 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Why Choose EduCollege?
+              Why Choose ?
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               We provide comprehensive education that combines academic excellence 
