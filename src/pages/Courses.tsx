@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Clock, Users, Award, BookOpen, Computer, Briefcase, Palette, Flask } from 'lucide-react';
+import { Clock, Users, Award, BookOpen, Computer, Briefcase, Palette, Microscope } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -13,7 +13,7 @@ const Courses = () => {
     { id: 'computer-science', name: 'Computer Science', icon: Computer },
     { id: 'business', name: 'Business', icon: Briefcase },
     { id: 'arts', name: 'Arts & Design', icon: Palette },
-    { id: 'science', name: 'Sciences', icon: Flask }
+    { id: 'science', name: 'Sciences', icon: Microscope }
   ];
 
   const courses = [
