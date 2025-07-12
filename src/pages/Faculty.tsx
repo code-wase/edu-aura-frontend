@@ -6,8 +6,8 @@ import {
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import img1 from '../assets/images/director.jpg';
-import img2 from '../assets/images/management.jpg';
+import img1 from '../Assets/images/director.jpg';
+import img2 from '../Assets/images/management.jpg';
 
 const Faculty = () => {
   const [selectedDepartment, setSelectedDepartment] = useState('all');
