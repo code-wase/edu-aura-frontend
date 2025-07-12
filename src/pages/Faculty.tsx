@@ -55,7 +55,7 @@ const Faculty = () => {
       email: 'nd_shinde@ssbesitm.org',
       phone: '+91 8999050686',
       experience: '12+ years',
-      specialization: ['Finance', 'Accounting', 'Business Analytics'],
+      specialization: ['Finance',  'Accounting', 'Business Analytics'],
       bio: 'Dr. Shinde brings deep industry insights to classroom teaching and research.',
       achievements: ['Certificate Courses in SAP', 'Member – Management Council'],
       image: 'https://via.placeholder.com/150?text=Shinde'
