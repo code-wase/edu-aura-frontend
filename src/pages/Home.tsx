@@ -213,7 +213,7 @@ const Home = () => {
     <div className="min-h-screen relative">
       {/* Floating Contact Icons */}
       <div className="fixed top-[35%] right-3 z-50 flex flex-col gap-3">
-        <a href="https://wa.me/912462254022" target="_blank" rel="noopener noreferrer"
+        <a href="https://wa.me/918830772432" target="_blank" rel="noopener noreferrer"
            className="rounded-full p-2 bg-white shadow-md hover:scale-110 transition-transform"
            style={{ boxShadow: '0 0 10px rgba(37, 211, 102, 0.4)' }}>
           <img src="https://img.icons8.com/color/36/whatsapp--v1.png" alt="WhatsApp" className="w-9 h-9"/>
@@ -223,7 +223,7 @@ const Home = () => {
            style={{ boxShadow: '0 0 10px rgba(234, 67, 53, 0.4)' }}>
           <img src="https://img.icons8.com/color/36/gmail-new.png" alt="Gmail" className="w-9 h-9"/>
         </a>
-        <a href="tel:+912462254022"
+        <a href="tel:+918830772432"
            className="rounded-full p-2 bg-white shadow-md hover:scale-110 transition-transform"
            style={{ boxShadow: '0 0 10px rgba(0, 132, 255, 0.4)' }}>
           <img src="https://img.icons8.com/color/36/phone.png" alt="Phone" className="w-9 h-9"/>
