@@ -1,5 +1,11 @@
-
-import { Users, Target, Heart, Award, Calendar, MapPin } from 'lucide-react';
+import {
+  Users,
+  Target,
+  Heart,
+  Award,
+  Calendar,
+  MapPin
+} from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 
 const About = () => {
@@ -7,41 +13,89 @@ const About = () => {
     {
       icon: Target,
       title: 'Excellence',
-      description: 'We strive for academic and personal excellence in everything we do.'
+      description: 'We strive for academic and personal excellence in everything we do.',
     },
     {
       icon: Heart,
       title: 'Integrity',
-      description: 'We maintain the highest standards of honesty and ethical conduct.'
+      description: 'We maintain the highest standards of honesty and ethical conduct.',
     },
     {
       icon: Users,
       title: 'Community',
-      description: 'We foster a supportive and inclusive learning environment.'
+      description: 'We foster a supportive and inclusive learning environment.',
     },
     {
       icon: Award,
       title: 'Innovation',
-      description: 'We embrace new ideas and encourage creative thinking.'
-    }
+      description: 'We embrace new ideas and encourage creative thinking.',
+    },
   ];
 
   const timeline = [
-    { year: '1985', event: 'ITM College  was founded with a vision to provide quality education' },
+    { year: '1985', event: 'ITM College was founded with a vision to provide quality education' },
     { year: '1992', event: 'Expanded to include engineering and business programs' },
     { year: '2001', event: 'Introduced state-of-the-art computer labs and digital learning' },
     { year: '2010', event: 'Achieved accreditation from national education board' },
     { year: '2018', event: 'Launched online learning platform and distance education' },
-    { year: '2024', event: 'Celebrating 39 years of educational excellence' }
+    { year: '2024', event: 'Celebrating 39 years of educational excellence' },
   ];
 
   return (
-    <div className="min-h-screen pt-16">
+    <div className="min-h-screen pt-16 relative">
+
+      {/* Right Floating Contact Icons */}
+      <div className="fixed top-[35%] right-3 z-50 flex flex-col gap-3">
+        <a
+          href="https://wa.me/918830772432"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="rounded-full p-2 bg-white shadow-md transition-transform hover:scale-110"
+          style={{
+            boxShadow: '0 0 10px rgba(37, 211, 102, 0.4)',
+          }}
+        >
+          <img
+            src="https://img.icons8.com/color/36/whatsapp--v1.png"
+            alt="WhatsApp"
+            className="w-9 h-9"
+          />
+        </a>
+
+        <a
+          href="mailto:principal@ssbesitm.org"
+          className="rounded-full p-2 bg-white shadow-md transition-transform hover:scale-110"
+          style={{
+            boxShadow: '0 0 10px rgba(234, 67, 53, 0.4)',
+          }}
+        >
+          <img
+            src="https://img.icons8.com/color/36/gmail-new.png"
+            alt="Gmail"
+            className="w-9 h-9"
+          />
+        </a>
+
+        <a
+          href="tel:+918830772432"
+          className="rounded-full p-2 bg-white shadow-md transition-transform hover:scale-110"
+          style={{
+            boxShadow: '0 0 10px rgba(0, 132, 255, 0.4)',
+          }}
+        >
+          <img
+            src="https://img.icons8.com/color/36/phone.png"
+            alt="Phone"
+            className="w-9 h-9"
+          />
+        </a>
+      </div>
+
       {/* Hero Section */}
       <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-5xl font-bold text-white mb-6 animate-fade-in">
-            About ITM College 
+            About ITM College
           </h1>
           <p className="text-xl text-blue-100 max-w-3xl mx-auto animate-slide-in-left">
             For nearly four decades, we've been committed to providing exceptional education 
@@ -92,11 +146,11 @@ const About = () => {
               These fundamental principles guide everything we do and shape our community.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {values.map((value, index) => (
-              <Card 
-                key={index} 
+              <Card
+                key={index}
                 className="card-hover animate-fade-in"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
@@ -125,24 +179,26 @@ const About = () => {
 
           <div className="relative">
             <div className="absolute left-4 md:left-1/2 transform md:-translate-x-1/2 h-full w-0.5 bg-blue-200"></div>
-            
+
             {timeline.map((item, index) => (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 className={`relative flex items-center mb-8 animate-fade-in ${
                   index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
                 }`}
                 style={{ animationDelay: `${index * 0.2}s` }}
               >
-                <div className={`flex-1 ${
-                  index % 2 === 0 ? 'md:text-right md:pr-8' : 'md:text-left md:pl-8'
-                } ml-12 md:ml-0`}>
+                <div
+                  className={`flex-1 ${
+                    index % 2 === 0 ? 'md:text-right md:pr-8' : 'md:text-left md:pl-8'
+                  } ml-12 md:ml-0`}
+                >
                   <div className="bg-white p-6 rounded-lg shadow-lg">
                     <div className="text-2xl font-bold text-blue-600 mb-2">{item.year}</div>
                     <p className="text-gray-700">{item.event}</p>
                   </div>
                 </div>
-                
+
                 <div className="absolute left-4 md:left-1/2 transform md:-translate-x-1/2 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
                   <Calendar className="h-4 w-4 text-white" />
                 </div>
@@ -162,15 +218,15 @@ const About = () => {
                   <div className="w-32 h-32 bg-white/20 rounded-full mx-auto mb-4 flex items-center justify-center">
                     <Users className="h-16 w-16" />
                   </div>
-                  <h3 className="text-2xl font-bold mb-2">Dr. Sarah Johnson</h3>
+                  <h3 className="text-2xl font-bold mb-2">Dr. MADHAV M. BOKARE</h3>
                   <p className="text-blue-100">Principal</p>
                 </div>
               </div>
-              
+
               <div className="md:w-2/3 p-8 md:p-12">
                 <h2 className="text-3xl font-bold text-gray-900 mb-6">Principal's Message</h2>
                 <p className="text-lg text-gray-600 leading-relaxed mb-6">
-                  "Welcome to ITM College , where excellence meets opportunity. For nearly four decades, 
+                  "Welcome to ITM College, where excellence meets opportunity. For nearly four decades, 
                   we have been committed to providing our students with an educational experience 
                   that goes beyond textbooks and classrooms."
                 </p>
@@ -181,10 +237,10 @@ const About = () => {
                   their careers."
                 </p>
                 <p className="text-lg text-gray-600 leading-relaxed">
-                  "I invite you to explore all that ITM College  has to offer and join our vibrant 
+                  "I invite you to explore all that ITM College has to offer and join our vibrant 
                   community of learners, innovators, and future leaders."
                 </p>
-                
+
                 <div className="mt-8 flex items-center text-gray-500">
                   <MapPin className="h-5 w-5 mr-2" />
                   <span>Ph.D. in Education, Harvard University</span>

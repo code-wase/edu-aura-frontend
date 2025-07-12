@@ -1,5 +1,14 @@
 import { useState } from "react";
-import {CheckCircle, FileText, CreditCard, UserCheck, Calendar, Phone, Mail, User,} from "lucide-react";
+import {
+  UserCheck,
+  FileText,
+  CreditCard,
+  CheckCircle,
+  Calendar,
+  Phone,
+  Mail,
+  User,
+} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,7 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
-  SelectItem, 
+  SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -28,29 +37,21 @@ const Admissions = () => {
 
   const courses = [
     { value: "btech-cse", label: "B.Tech Computer Science", level: "UG" },
-    {
-      value: "btech-mech",
-      label: "B.Tech Mechanical Engineering",
-      level: "UG",
-    },
+    { value: "btech-mech", label: "B.Tech Mechanical Engineering", level: "UG" },
     { value: "bca", label: "BCA (Computer Applications)", level: "UG" },
     { value: "bba", label: "BBA (Business Administration)", level: "UG" },
-    {
-      value: "bsc-hospitality",
-      label: "B.Sc in Hospitality Studies",
-      level: "UG",
-    },
+    { value: "bsc-hospitality", label: "B.Sc in Hospitality Studies", level: "UG" },
     { value: "mba", label: "MBA – General Management", level: "PG" },
     { value: "mca", label: "MCA (Computer Applications)", level: "PG" },
     { value: "mtech-cse", label: "M.Tech in Computer Science", level: "PG" },
   ];
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: any) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleCourseChange = (value) => {
+  const handleCourseChange = (value: string) => {
     const selected = courses.find((c) => c.value === value);
     setFormData((prev) => ({
       ...prev,
@@ -59,7 +60,7 @@ const Admissions = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
     toast({
       title: "Application Submitted!",
@@ -77,7 +78,49 @@ const Admissions = () => {
   };
 
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="py-20 bg-gray-50 relative">
+      {/* Floating Contact Icons */}
+      <div className="fixed top-[35%] right-3 z-50 flex flex-col gap-3">
+        <a
+          href="https://wa.me/918830772432"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="rounded-full p-2 bg-white transition-transform hover:scale-110"
+          style={{ boxShadow: "0 0 10px rgba(37, 211, 102, 0.5)" }}
+        >
+          <img
+            src="https://img.icons8.com/color/36/whatsapp--v1.png"
+            alt="WhatsApp"
+            className="w-9 h-9"
+          />
+        </a>
+
+        <a
+          href="mailto:principal@ssbesitm.org"
+          className="rounded-full p-2 bg-white transition-transform hover:scale-110"
+          style={{ boxShadow: "0 0 10px rgba(234, 67, 53, 0.5)" }}
+        >
+          <img
+            src="https://img.icons8.com/color/36/gmail-new.png"
+            alt="Gmail"
+            className="w-9 h-9"
+          />
+        </a>
+
+        <a
+          href="tel:+918830772432"
+          className="rounded-full p-2 bg-white transition-transform hover:scale-110"
+          style={{ boxShadow: "0 0 10px rgba(0, 132, 255, 0.5)" }}
+        >
+          <img
+            src="https://img.icons8.com/color/36/phone.png"
+            alt="Phone"
+            className="w-9 h-9"
+          />
+        </a>
+      </div>
+
+      {/* Admission Form */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">Apply Now</h2>
@@ -88,9 +131,7 @@ const Admissions = () => {
 
         <Card className="animate-fade-in">
           <CardHeader>
-            <CardTitle className="text-2xl text-center">
-              Application Form
-            </CardTitle>
+            <CardTitle className="text-2xl text-center">Application Form</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -115,10 +156,8 @@ const Admissions = () => {
                     required
                   />
                 </div>
-
-
-
               </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <Label htmlFor="email">Email</Label>
@@ -130,7 +169,6 @@ const Admissions = () => {
                     onChange={handleInputChange}
                     required
                   />
-                  
                 </div>
                 <div>
                   <Label htmlFor="phone">Phone</Label>
@@ -144,6 +182,7 @@ const Admissions = () => {
                   />
                 </div>
               </div>
+
               <div>
                 <Label htmlFor="course">Select Course</Label>
                 <Select onValueChange={handleCourseChange} required>
@@ -159,12 +198,14 @@ const Admissions = () => {
                   </SelectContent>
                 </Select>
               </div>
+
               {formData.level && (
                 <div>
                   <Label>Course Level</Label>
                   <Input disabled value={formData.level} />
                 </div>
               )}
+
               <div>
                 <Label htmlFor="message">Personal Statement</Label>
                 <Textarea
@@ -176,6 +217,7 @@ const Admissions = () => {
                   rows={4}
                 />
               </div>
+
               <Button type="submit" className="w-full" size="lg">
                 Submit Application
               </Button>

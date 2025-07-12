@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {
   User, Mail, Phone, BookOpen, Award,
-  Users, Computer, Briefcase, Palette, Microscope
+  Users, Computer, Briefcase, Palette, Microscope,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -17,7 +17,7 @@ const Faculty = () => {
     { id: 'computer-science', name: 'Computer Science', icon: Computer },
     { id: 'management', name: 'Management', icon: Briefcase },
     { id: 'arts', name: 'Arts & Design', icon: Palette },
-    { id: 'science', name: 'Sciences', icon: Microscope }
+    { id: 'science', name: 'Sciences', icon: Microscope },
   ];
 
   const facultyMembers = [
@@ -32,7 +32,7 @@ const Faculty = () => {
       specialization: ['AI & ML', 'Computer Networks', 'Research'],
       bio: 'Dr. Bokare is a veteran academician and researcher with over 36 years of experience, leading the department at SSBES’ ITM, Nanded.',
       achievements: ['Editor IJACT', 'ICT Researcher of the Year 2016', 'Ph.D Supervisor'],
-      image: img1
+      image: img1,
     },
     {
       id: 2,
@@ -45,7 +45,7 @@ const Faculty = () => {
       specialization: ['Marketing', 'Business Strategy', 'HR'],
       bio: 'Dr. Altamash leads the Management department with strong academic and industry experience.',
       achievements: ['Published 30+ papers', 'Led MBA curriculum redesign'],
-      image: img2
+      image: img2,
     },
     {
       id: 3,
@@ -55,10 +55,10 @@ const Faculty = () => {
       email: 'nd_shinde@ssbesitm.org',
       phone: '+91 8999050686',
       experience: '12+ years',
-      specialization: ['Finance',  'Accounting', 'Business Analytics'],
+      specialization: ['Finance', 'Accounting', 'Business Analytics'],
       bio: 'Dr. Shinde brings deep industry insights to classroom teaching and research.',
       achievements: ['Certificate Courses in SAP', 'Member – Management Council'],
-      image: 'https://via.placeholder.com/150?text=Shinde'
+      image: 'https://via.placeholder.com/150?text=Shinde',
     },
     {
       id: 4,
@@ -71,30 +71,54 @@ const Faculty = () => {
       specialization: ['Organizational Behavior', 'Leadership'],
       bio: 'Dr. Nasreen specializes in leadership and organizational development.',
       achievements: ['Presented at ICMIT Auckland', 'Won Institutional Teaching Award'],
-      image: 'https://via.placeholder.com/150?text=Nasreen'
-    }
+      image: 'https://via.placeholder.com/150?text=Nasreen',
+    },
   ];
 
-  const filteredFaculty = selectedDepartment === 'all'
-    ? facultyMembers
-    : facultyMembers.filter(member => member.department === selectedDepartment);
+  const filteredFaculty =
+    selectedDepartment === 'all'
+      ? facultyMembers
+      : facultyMembers.filter((member) => member.department === selectedDepartment);
 
   return (
     <div className="min-h-screen pt-16 bg-gray-50">
-      {/* Header */}
-      <section className="py-16 bg-gradient-to-r from-blue-600 to-purple-600">
-        <div className="text-center px-4">
-          <h1 className="text-5xl font-bold text-white">Our Faculty</h1>
-          <p className="text-xl text-blue-100 mt-4">
-            Meet our distinguished educators committed to academic excellence.
-          </p>
-        </div>
+      {/* Floating Flat Icons */}
+      <div className="fixed top-[35%] right-3 z-50 flex flex-col gap-3">
+        <a
+          href="https://wa.me/918830772432"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="rounded-full p-2 bg-white shadow-md transition-transform hover:scale-110"
+          style={{ boxShadow: '0 0 10px rgba(37, 211, 102, 0.4)' }}
+        >
+          <img src="https://img.icons8.com/color/36/whatsapp--v1.png" alt="WhatsApp" className="w-9 h-9" />
+        </a>
+        <a
+          href="mailto:principal@ssbesitm.org"
+          className="rounded-full p-2 bg-white shadow-md transition-transform hover:scale-110"
+          style={{ boxShadow: '0 0 10px rgba(234, 67, 53, 0.4)' }}
+        >
+          <img src="https://img.icons8.com/color/36/gmail-new.png" alt="Gmail" className="w-9 h-9" />
+        </a>
+        <a
+          href="tel:+918830772432"
+          className="rounded-full p-2 bg-white shadow-md transition-transform hover:scale-110"
+          style={{ boxShadow: '0 0 10px rgba(0, 132, 255, 0.4)' }}
+        >
+          <img src="https://img.icons8.com/color/36/phone.png" alt="Phone" className="w-9 h-9" />
+        </a>
+      </div>
+
+      <section className="py-16 bg-gradient-to-r from-blue-600 to-purple-600 text-center px-4">
+        <h1 className="text-5xl font-bold text-white">Our Faculty</h1>
+        <p className="text-xl text-blue-100 mt-4">
+          Meet our distinguished educators committed to academic excellence.
+        </p>
       </section>
 
-      {/* Department Filter */}
       <section className="py-8 bg-white border-b">
         <div className="flex justify-center flex-wrap gap-4">
-          {departments.map(dept => (
+          {departments.map((dept) => (
             <Button
               key={dept.id}
               variant={selectedDepartment === dept.id ? 'default' : 'outline'}
@@ -108,7 +132,6 @@ const Faculty = () => {
         </div>
       </section>
 
-      {/* Faculty Grid */}
       <section className="py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto px-4">
           {filteredFaculty.map((fac, idx) => (
@@ -127,10 +150,8 @@ const Faculty = () => {
                   {fac.experience} Experience
                 </Badge>
               </CardHeader>
-
               <CardContent className="space-y-4">
                 <p className="text-gray-600 text-sm">{fac.bio}</p>
-
                 <div>
                   <h4 className="font-semibold mb-1 flex items-center text-gray-900">
                     <BookOpen className="h-4 w-4 mr-2" />
@@ -149,7 +170,6 @@ const Faculty = () => {
                     )}
                   </div>
                 </div>
-
                 <div>
                   <h4 className="font-semibold mb-1 flex items-center text-gray-900">
                     <Award className="h-4 w-4 mr-2" />
@@ -169,7 +189,6 @@ const Faculty = () => {
                     )}
                   </ul>
                 </div>
-
                 <div className="border-t pt-3 space-y-2">
                   <div className="flex items-center text-sm text-gray-600">
                     <Mail className="h-4 w-4 text-blue-600 mr-2" />
@@ -188,7 +207,6 @@ const Faculty = () => {
         </div>
       </section>
 
-      {/* Faculty Stats */}
       <section className="py-16 bg-white">
         <div className="text-center mb-12 px-4">
           <h2 className="text-3xl font-bold text-gray-900">Faculty Excellence</h2>
@@ -216,7 +234,6 @@ const Faculty = () => {
         </div>
       </section>
 
-      {/* Call to Action */}
       <section className="py-16 bg-blue-600 text-center px-4">
         <h2 className="text-3xl font-bold text-white mb-6">Learn from the Best</h2>
         <p className="text-xl text-blue-100 mb-8">
@@ -226,7 +243,10 @@ const Faculty = () => {
           <Button className="bg-white text-blue-600 hover:bg-gray-100">
             Apply Now
           </Button>
-          <Button variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600">
+          <Button
+            variant="outline"
+            className="border-white text-white hover:bg-white hover:text-blue-600"
+          >
             Contact Us
           </Button>
         </div>
