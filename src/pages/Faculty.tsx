@@ -50,7 +50,7 @@ const Faculty = () => {
     {
       id: 3,
       name: 'Dr. N. D. Shinde',
-      title: 'Assistant Professor, Management',
+      title: 'Assistant Professor,  Management',
       department: 'management',
       email: 'nd_shinde@ssbesitm.org',
       phone: '+91 8999050686',
