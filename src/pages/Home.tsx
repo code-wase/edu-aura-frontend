@@ -1,12 +1,18 @@
 import { Link } from 'react-router-dom';
 import {
-  ArrowRight, BookOpen, Users, Award, Target, ChevronDown, Calendar, Bell, ClipboardList, Megaphone
+  ArrowRight, BookOpen, Users, Award, Target, Calendar, Bell, ClipboardList, Megaphone
 } from 'lucide-react';
-import Carousel from 'react-multi-carousel';
-import 'react-multi-carousel/lib/styles.css';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useEffect, useRef } from 'react';
+
+// Import images
+import poster from '../Assets/images/poster.jpg';
+import staf from '../Assets/images/staf.jpg';
+import campus from '../Assets/images/yoga.jpg';
 
 const Home = () => {
   const stats = [
@@ -40,9 +46,17 @@ const Home = () => {
   ];
 
   const carouselItems = [
-    { title: 'Explore Campus', subtitle: 'A glimpse into daily life at ITM', image: '/carousel-campus.jpg' },
-    { title: 'State-of-the‑Art Labs', subtitle: 'Modern infrastructure for innovation', image: '/carousel-labs.jpg' },
-    { title: 'Cultural Events & Festivals', subtitle: 'Join our vibrant community', image: '/carousel-events.jpg' },
+    { 
+      image: poster 
+    },
+    { 
+      title: 'International Yoga Bay', 
+      image: staf 
+    },
+    { 
+      title: 'Explore Campus', 
+      image: campus 
+    }
   ];
 
   // Notice Board Data for different programs
@@ -112,12 +126,6 @@ const Home = () => {
       icon: ClipboardList,
     },
   ];
-
-  const responsive = {
-    desktop: { breakpoint: { max: 3000, min: 1024 }, items: 1 },
-    tablet: { breakpoint: { max: 1024, min: 464 }, items: 1 },
-    mobile: { breakpoint: { max: 464, min: 0 }, items: 1 },
-  };
 
   // Auto-scrolling notice board implementation
   const AutoScrollNoticeBoard = () => {
@@ -209,10 +217,25 @@ const Home = () => {
     );
   };
 
+  // Faster carousel settings
+  const carouselSettings = {
+    dots: false,
+    arrows: false,
+    infinite: true,
+    speed: 500, // Faster transition
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 2500, // Faster rotation
+    pauseOnHover: false,
+    fade: true,
+    cssEase: 'linear'
+  };
+
   return (
     <div className="min-h-screen relative">
       {/* Floating Contact Icons */}
-      <div className="fixed top-[35%] right-3 z-50 flex flex-col gap-3">
+      <div className="fixed top-[40%] right-3 z-50 flex flex-col gap-3">
         <a href="https://wa.me/918830772432" target="_blank" rel="noopener noreferrer"
            className="rounded-full p-2 bg-white shadow-md hover:scale-110 transition-transform"
            style={{ boxShadow: '0 0 10px rgba(37, 211, 102, 0.4)' }}>
@@ -230,43 +253,49 @@ const Home = () => {
         </a>
       </div>
 
-      {/* Carousel Hero */}
-      <section>
-        <Carousel
-          responsive={responsive}
-          showDots={false}
-          infinite
-          autoPlay
-          autoPlaySpeed={3000}
-          arrows={false}
-          containerClass="carousel-container"
-          itemClass="carousel-item"
-        >
+      {/* Carousel Hero - Below Navigation Bar */}
+      <section className="relative mt-16"> {/* Added mt-16 for navigation bar space */}
+        <Slider {...carouselSettings}>
           {carouselItems.map((item, idx) => (
-            <div key={idx} className="relative h-screen hero-gradient flex items-center justify-center">
-              <img src={item.image} alt={item.title}
-                   className="absolute inset-0 w-full h-full object-cover opacity-60"/>
+            <div key={idx} className="relative h-screen flex items-center justify-center">
+              {/* Background image */}
+              <img 
+                src={item.image} 
+                alt={item.title}
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+              
+              {/* Semi-transparent overlay */}
+              <div className="absolute inset-0 bg-black/30"></div>
+              
+              {/* Content - Centered */}
               <div className="relative z-10 text-center text-white px-4">
-                <h1 className="text-5xl md:text-7xl font-bold mb-4 animate-fade-in">{item.title}</h1>
-                <p className="text-xl md:text-2xl mb-8 animate-slide-in-left">{item.subtitle}</p>
+                <h1 className="text-4xl md:text-6xl font-bold mb-8 text-center animate-fade-in">
+                  {item.title}
+                </h1>
+              </div>
+              
+              {/* Buttons at bottom with new colors */}
+              <div className="absolute bottom-20 left-0 right-0 z-10">
                 <div className="flex flex-col sm:flex-row gap-4 justify-center animate-slide-in-right">
-                  <Button asChild size="lg" className="bg-white text-blue-600 hover:bg-gray-100">
+                  {/* Apply Now Button - Vibrant Blue */}
+                  <Button asChild size="lg" 
+                          className="bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 shadow-lg">
                     <Link to="/admissions">
                       Apply Now <ArrowRight className="ml-2 h-5 w-5"/>
                     </Link>
                   </Button>
+                  
+                  {/* Explore Courses Button - Light Teal */}
                   <Button asChild size="lg" variant="outline"
-                          className="border-white text-white hover:bg-white hover:text-blue-600">
+                          className="bg-gradient-to-r from-teal-400 to-teal-500 text-white border-0 hover:from-teal-500 hover:to-teal-600 shadow-lg">
                     <Link to="/courses">Explore Courses</Link>
                   </Button>
                 </div>
               </div>
             </div>
           ))}
-        </Carousel>
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <ChevronDown className="h-8 w-8 text-white"/>
-        </div>
+        </Slider>
       </section>
 
       {/* Stats Section */}
@@ -339,8 +368,6 @@ const Home = () => {
                   </ul>
                 </div>
               </div>
-              
-              {/* Download Brochure section has been removed */}
             </div>
           </div>
         </div>
@@ -368,18 +395,19 @@ const Home = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-blue-600 text-center px-4">
+      <section className="py-20 bg-gradient-to-r from-blue-600 to-indigo-700 text-center px-4">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-4xl font-bold text-white mb-6">Ready to Start Your Journey?</h2>
           <p className="text-xl text-blue-100 mb-8">
             Join our community of learners and take the first step towards your bright future.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button asChild size="lg" className="bg-white text-blue-600 hover:bg-gray-100">
+            <Button asChild size="lg" 
+                    className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-gray-900 hover:from-yellow-500 hover:to-yellow-600 shadow-lg">
               <Link to="/admissions">Apply for Admission</Link>
             </Button>
             <Button asChild size="lg" variant="outline"
-                    className="border-white text-white hover:bg-white hover:text-blue-600">
+                    className="border-white text-white hover:bg-white/20 hover:text-white">
               <Link to="/contact">Contact Us</Link>
             </Button>
           </div>

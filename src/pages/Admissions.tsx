@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { Badge } from "@/components/ui/badge";
 
 const Admissions = () => {
   const { toast } = useToast();
@@ -35,16 +36,25 @@ const Admissions = () => {
     message: "",
   });
 
-  const courses = [
-    { value: "btech-cse", label: "B.Tech Computer Science", level: "UG" },
-    { value: "btech-mech", label: "B.Tech Mechanical Engineering", level: "UG" },
-    { value: "bca", label: "BCA (Computer Applications)", level: "UG" },
-    { value: "bba", label: "BBA (Business Administration)", level: "UG" },
-    { value: "bsc-hospitality", label: "B.Sc in Hospitality Studies", level: "UG" },
-    { value: "mba", label: "MBA – General Management", level: "PG" },
-    { value: "mca", label: "MCA (Computer Applications)", level: "PG" },
-    { value: "mtech-cse", label: "M.Tech in Computer Science", level: "PG" },
+  const detailedCourses = [
+    { id: 1, title: 'B.Tech Computer Science', department: 'engineering', duration: '4 Years', level: 'UG' },
+    { id: 2, title: 'B.Tech Mechanical Engineering', department: 'engineering', duration: '4 Years', level: 'UG' },
+    { id: 3, title: 'BCA (Computer Applications)', department: 'engineering', duration: '3 Years', level: 'UG' },
+    { id: 4, title: 'BBA (Business Administration)', department: 'management', duration: '3 Years', level: 'UG' },
+    { id: 5, title: 'B.Sc in Hospitality Studies', department: 'arts', duration: '3 Years', level: 'UG' },
+    { id: 6, title: 'MBA – General Management', department: 'management', duration: '2 Years', level: 'PG' },
+    { id: 7, title: 'MCA (Computer Applications)', department: 'engineering', duration: '2 Years', level: 'PG' },
+    { id: 8, title: 'M.Tech in Computer Science', department: 'engineering', duration: '2 Years', level: 'PG' },
   ];
+
+  // Map courses for dropdown
+  const courses = detailedCourses.map(course => ({
+    value: course.id.toString(),
+    label: course.title,
+    level: course.level,
+    duration: course.duration,
+    department: course.department
+  }));
 
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
@@ -62,10 +72,30 @@ const Admissions = () => {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
+    
+    // Find selected course details
+    const selectedCourse = courses.find(c => c.value === formData.course);
+    const courseName = selectedCourse?.label || "Selected Course";
+    
+    // Prepare WhatsApp message
+    const whatsappMessage = `*New Application Submission*%0A%0A
+*Name:* ${formData.firstName} ${formData.lastName}%0A
+*Email:* ${formData.email}%0A
+*Phone:* ${formData.phone}%0A
+*Course:* ${courseName}%0A
+*Level:* ${formData.level}%0A%0A
+*Personal Statement:*%0A${formData.message}`;
+    
+    // Open WhatsApp in new tab
+    window.open(`https://wa.me/918830772432?text=${whatsappMessage}`, '_blank');
+    
+    // Show toast notification
     toast({
       title: "Application Submitted!",
-      description: "Thank you for applying. We will get back to you shortly.",
+      description: "Thank you for applying. We'll contact you shortly.",
     });
+    
+    // Reset form
     setFormData({
       firstName: "",
       lastName: "",
@@ -192,7 +222,12 @@ const Admissions = () => {
                   <SelectContent>
                     {courses.map((c) => (
                       <SelectItem key={c.value} value={c.value}>
-                        {c.label}
+                        <div className="flex justify-between items-center w-full">
+                          <span>{c.label}</span>
+                          <Badge variant="secondary" className="ml-2">
+                            {c.level}
+                          </Badge>
+                        </div>
                       </SelectItem>
                     ))}
                   </SelectContent>

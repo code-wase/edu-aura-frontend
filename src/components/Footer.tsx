@@ -63,15 +63,15 @@ const Footer = () => {
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
                 <MapPin className="h-4 w-4 text-blue-400 flex-shrink-0" />
-                <span className="text-gray-300 text-sm">123 Education Street, Learning City, LC 12345</span>
+                <span className="text-gray-300 text-sm">5895+MHR, VIP Rd, Vishnu Nagar, Nanded-Waghala, Maharashtra 431602.</span>
               </div>
               <div className="flex items-center space-x-3">
                 <Phone className="h-4 w-4 text-blue-400 flex-shrink-0" />
-                <span className="text-gray-300 text-sm">+1 (555) 123-4567</span>
+                <span className="text-gray-300 text-sm">+91 9421870580</span>
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="h-4 w-4 text-blue-400 flex-shrink-0" />
-                <span className="text-gray-300 text-sm">info@ITM College .edu</span>
+                <span className="text-gray-300 text-sm">principal@ssbesitm.org</span>
               </div>
             </div>
           </div>
