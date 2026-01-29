@@ -5,32 +5,24 @@ import Courses from './pages/Courses';
 import Admissions from './pages/Admissions';
 import Contact from './pages/Contact';
 import Faculty from './pages/Faculty';
+import About from './pages/About';
+import Gallery from './pages/Gallery';
+
+
 
 const App = () => {
   return (
     <BrowserRouter>
       <Layout>
         <Routes>
-          <Route
-            path='/'
-            element={<Home />}
-          />
-          <Route
-            path='/courses'
-            element={<Courses />}
-          />
-          <Route
-            path='/faculty'
-            element={<Faculty />}
-          />
-          <Route
-            path='/admissions'
-            element={<Admissions />}
-          />
-          <Route
-            path='/contact'
-            element={<Contact />}
-          />
+          <Route path='/' element={<Home />} />
+          <Route path='/courses' element={<Courses />} />
+          <Route path='/faculty' element={<Faculty />} />
+          <Route path='/admissions' element={<Admissions />} />
+          <Route path='/contact' element={<Contact />} />
+          <Route path='/about' element={<About />} />
+          <Route path='/gallery' element={<Gallery />} />
+
         </Routes>
       </Layout>
     </BrowserRouter>

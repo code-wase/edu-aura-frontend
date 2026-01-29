@@ -2,10 +2,155 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body, #root {
-  height: 100%;
+/* =========================================================
+   ROOT + BRAND VARIABLES (LIGHT MODE)
+========================================================= */
+@layer base {
+  :root {
+    /* ===== BRAND COLORS ===== */
+    --primary: 270 47% 52%;        /* #7B4CBB */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 224 54% 56%;      /* #546CCC */
+    --secondary-foreground: 0 0% 100%;
+
+    /* ===== BACKGROUND & TEXT ===== */
+    --background: 240 20% 98%;
+    --foreground: 222 47% 11%;
+
+    /* ===== CARD / POPOVER ===== */
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    /* ===== MUTED / ACCENT ===== */
+    --muted: 240 5% 96%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 224 54% 56%;
+    --accent-foreground: 0 0% 100%;
+
+    /* ===== STATES ===== */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* ===== UI ELEMENTS ===== */
+    --border: 240 6% 90%;
+    --input: 240 6% 90%;
+    --ring: 270 47% 52%;
+
+    --radius: 0.75rem;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
 }
 
-body {
-  @apply bg-gray-50 text-gray-800 antialiased;
+/* =========================================================
+   DARK MODE VARIABLES
+========================================================= */
+@layer base {
+  .dark {
+    --background: 222 47% 7%;
+    --foreground: 210 40% 98%;
+
+    --card: 222 47% 11%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 98%;
+
+    --muted: 217 19% 18%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 224 54% 56%;
+    --accent-foreground: 0 0% 100%;
+
+    --border: 217 19% 18%;
+    --input: 217 19% 18%;
+    --ring: 270 47% 52%;
+  }
+}
+
+/* =========================================================
+   GLOBAL ENHANCEMENTS
+========================================================= */
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+}
+
+/* =========================================================
+   BUTTON PREMIUM EFFECTS (NO COMPONENT CHANGE)
+========================================================= */
+@layer components {
+  .btn-gradient {
+    @apply bg-gradient-to-r from-primary to-secondary text-white;
+  }
+
+  .btn-gradient:hover {
+    filter: brightness(1.05);
+  }
+}
+
+/* =========================================================
+   CARD PREMIUM HOVER
+========================================================= */
+@layer components {
+  .card-hover {
+    @apply transition-all duration-300 ease-out;
+  }
+
+  .card-hover:hover {
+    transform: translateY(-4px);
+  }
+}
+
+/* =========================================================
+   FORM & INPUT POLISH
+========================================================= */
+@layer components {
+  input,
+  textarea,
+  select {
+    @apply transition-shadow;
+  }
+
+  input:focus,
+  textarea:focus,
+  select:focus {
+    @apply ring-2 ring-primary/60;
+  }
+}
+
+/* =========================================================
+   SCROLLBAR (OPTIONAL BUT PREMIUM)
+========================================================= */
+@layer base {
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+      to bottom,
+      hsl(var(--primary)),
+      hsl(var(--secondary))
+    );
+    border-radius: 999px;
+  }
 }

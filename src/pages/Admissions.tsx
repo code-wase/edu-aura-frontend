@@ -14,7 +14,6 @@ const Admissions = () => {
   const [loading, setLoading] = useState(false);
 
   const submitHandler = async () => {
-    // validation
     if (!form.name || !form.email || !form.phone || !form.course) {
       toast.error('Please fill all fields');
       return;
@@ -22,12 +21,9 @@ const Admissions = () => {
 
     try {
       setLoading(true);
-
       await api.post('/admissions/apply', form);
-
       toast.success('Admission applied successfully');
 
-      // reset form
       setForm({
         name: '',
         email: '',
@@ -36,7 +32,6 @@ const Admissions = () => {
       });
     } catch (error: any) {
       console.error('Admission API Error:', error);
-
       toast.error(
         error?.response?.data?.message || 'Failed to apply admission',
       );
@@ -47,25 +42,25 @@ const Admissions = () => {
 
   return (
     <Container>
-      {/* TOASTER ONLY FOR THIS PAGE */}
+      {/* TOASTER */}
       <Toaster
-        position='top-right'
+        position="top-right"
         toastOptions={{
           duration: 3000,
-          style: {
-            fontSize: '14px',
-          },
+          style: { fontSize: '14px' },
         }}
       />
 
-      <h2 className='text-3xl font-bold my-10 text-center'>Admission Form</h2>
+      <h2 className="my-10 text-center text-3xl font-bold text-primary">
+        Admission Form
+      </h2>
 
-      <div className='max-w-xl mx-auto bg-white p-6 rounded-xl shadow'>
+      <div className="mx-auto max-w-xl rounded-xl bg-card p-6 shadow">
         {Object.keys(form).map((key) => (
           <input
             key={key}
             value={(form as any)[key]}
-            className='w-full border rounded-lg px-4 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500'
+            className="mb-4 w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
             placeholder={key.toUpperCase()}
             onChange={(e) => setForm({ ...form, [key]: e.target.value })}
             disabled={loading}
@@ -75,13 +70,10 @@ const Admissions = () => {
         <button
           onClick={submitHandler}
           disabled={loading}
-          className={`w-full py-2 rounded-lg text-white transition
-            ${
-              loading
-                ? 'bg-blue-400 cursor-not-allowed'
-                : 'bg-blue-600 hover:bg-blue-700'
-            }
-          `}
+          className={`w-full rounded-lg py-2 text-white transition ${loading
+              ? 'cursor-not-allowed bg-secondary/70'
+              : 'bg-primary hover:bg-secondary'
+            }`}
         >
           {loading ? 'Submitting...' : 'Apply Now'}
         </button>

@@ -1,44 +1,62 @@
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Menu, X } from 'lucide-react';
 
 const Navbar = () => {
-  return (
-    <header className='bg-white shadow sticky top-0 z-50'>
-      <div className='max-w-7xl mx-auto px-4 py-4 flex justify-between items-center'>
-        <h1 className='text-xl font-bold text-blue-600'>EduAura</h1>
+  const [isOpen, setIsOpen] = useState(false);
 
-        <nav className='hidden md:flex gap-6'>
-          <Link
-            to='/'
-            className='hover:text-blue-600'
-          >
-            Home
-          </Link>
-          <Link
-            to='/courses'
-            className='hover:text-blue-600'
-          >
-            Courses
-          </Link>
-          <Link
-            to='/faculty'
-            className='hover:text-blue-600'
-          >
-            Faculty
-          </Link>
-          <Link
-            to='/admissions'
-            className='hover:text-blue-600'
-          >
-            Admissions
-          </Link>
-          <Link
-            to='/contact'
-            className='hover:text-blue-600'
-          >
-            Contact
-          </Link>
+  return (
+    <header className="sticky top-0 z-50 bg-background shadow">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
+        {/* LOGO */}
+        <h1 className="text-xl font-bold text-primary">
+          <Link to="/">EduAura</Link>
+        </h1>
+
+        {/* DESKTOP NAV */}
+        <nav className="hidden items-center gap-6 md:flex">
+          {['/', '/courses', '/faculty', '/admissions', '/contact', '/gallery', '/about'].map(
+            (path, i) => (
+              <Link
+                key={path}
+                to={path}
+                className="hover:text-primary transition-colors"
+              >
+                {['Home', 'Courses', 'Faculty', 'Admissions', 'Contact', 'Gallery', 'About'][i]}
+              </Link>
+            )
+          )}
         </nav>
+
+        {/* MOBILE BUTTON */}
+        <button
+          className="md:hidden text-primary"
+          onClick={() => setIsOpen(!isOpen)}
+          aria-label="Toggle menu"
+        >
+          {isOpen ? <X size={28} /> : <Menu size={28} />}
+        </button>
       </div>
+
+      {/* MOBILE MENU */}
+      {isOpen && (
+        <div className="md:hidden border-t bg-background shadow">
+          <nav className="flex flex-col px-4 py-4">
+            {['/', '/courses', '/faculty', '/admissions', '/contact'].map(
+              (path, i) => (
+                <Link
+                  key={path}
+                  to={path}
+                  onClick={() => setIsOpen(false)}
+                  className="py-3 hover:text-primary transition-colors"
+                >
+                  {['Home', 'Courses', 'Faculty', 'Admissions', 'Contact'][i]}
+                </Link>
+              )
+            )}
+          </nav>
+        </div>
+      )}
     </header>
   );
 };

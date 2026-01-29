@@ -20,15 +20,6 @@ const Courses = () => {
     const fetchCourses = async () => {
       try {
         const res = await api.get('/courses');
-
-        /**
-         * Backend response shape:
-         * {
-         *   success: true,
-         *   count: number,
-         *   data: Course[]
-         * }
-         */
         setCourses(res.data.data);
       } catch (err) {
         console.error('Courses API Error:', err);
@@ -44,7 +35,9 @@ const Courses = () => {
   if (loading) {
     return (
       <Container>
-        <p className='text-center mt-20 text-gray-500'>Loading courses...</p>
+        <p className="mt-20 text-center text-muted-foreground">
+          Loading courses...
+        </p>
       </Container>
     );
   }
@@ -52,41 +45,44 @@ const Courses = () => {
   if (error) {
     return (
       <Container>
-        <p className='text-center mt-20 text-red-500'>{error}</p>
+        <p className="mt-20 text-center text-destructive">{error}</p>
       </Container>
     );
   }
 
   return (
     <Container>
-      <h2 className='text-3xl font-bold my-10 text-center'>Our Courses</h2>
+      <h2 className="my-10 text-center text-3xl font-bold text-primary">
+        Our Courses
+      </h2>
 
-      <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {courses.map((course) => (
           <div
             key={course._id}
-            className='bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden'
+            className="overflow-hidden rounded-xl bg-card shadow transition hover:shadow-lg"
           >
             {/* Course Image */}
             <img
               src={course.image}
               alt={course.title}
-              className='h-44 w-full object-cover'
+              className="h-44 w-full object-cover"
             />
 
             {/* Course Content */}
-            <div className='p-6'>
-              <h3 className='text-lg font-semibold'>{course.title}</h3>
+            <div className="p-6">
+              <h3 className="text-lg font-semibold">{course.title}</h3>
 
-              <p className='text-sm text-gray-600 mt-2 line-clamp-3'>
+              <p className="mt-2 line-clamp-3 text-sm text-muted-foreground">
                 {course.description}
               </p>
 
-              <p className='mt-3 text-sm text-gray-700'>
-                Duration: <span className='font-medium'>{course.duration}</span>
+              <p className="mt-3 text-sm">
+                Duration:{' '}
+                <span className="font-medium">{course.duration}</span>
               </p>
 
-              <p className='mt-2 font-bold text-blue-600'>
+              <p className="mt-2 font-bold text-primary">
                 ₹{course.price.toLocaleString()}
               </p>
             </div>
