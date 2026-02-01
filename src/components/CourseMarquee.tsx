@@ -49,27 +49,51 @@ const careers = [
 ];
 
 const CourseMarquee: React.FC = () => {
-  // Split careers into two rows
-  const row1 = careers.slice(0, 13);
-  const row2 = careers.slice(13);
+  // Split careers into 5 rows
+  const row1 = careers.slice(0, 5);
+  const row2 = careers.slice(5, 10);
+  const row3 = careers.slice(10, 15);
+  const row4 = careers.slice(15, 20);
+  const row5 = careers.slice(20, 25);
 
   return (
-    <div className="relative w-full py-8 overflow-hidden">
+    <div className="relative w-full py-4 overflow-hidden">
       {/* Gradient Overlays */}
-      <div className="absolute left-0 top-0 bottom-0 w-20 md:w-40 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
-      <div className="absolute right-0 top-0 bottom-0 w-20 md:w-40 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+      <div className="absolute left-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+      <div className="absolute right-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
 
       {/* Row 1 - Scrolling Left */}
-      <div className="flex mb-4 animate-marquee-left">
-        {[...row1, ...row1, ...row1].map((career, index) => (
+      <div className="flex mb-3 animate-marquee-row-1">
+        {[...row1, ...row1, ...row1, ...row1, ...row1, ...row1].map((career, index) => (
           <CareerCard key={`row1-${index}`} career={career} />
         ))}
       </div>
 
       {/* Row 2 - Scrolling Right */}
-      <div className="flex animate-marquee-right">
-        {[...row2, ...row2, ...row2].map((career, index) => (
+      <div className="flex mb-3 animate-marquee-row-2">
+        {[...row2, ...row2, ...row2, ...row2, ...row2, ...row2].map((career, index) => (
           <CareerCard key={`row2-${index}`} career={career} />
+        ))}
+      </div>
+
+      {/* Row 3 - Scrolling Left (faster) */}
+      <div className="flex mb-3 animate-marquee-row-3">
+        {[...row3, ...row3, ...row3, ...row3, ...row3, ...row3].map((career, index) => (
+          <CareerCard key={`row3-${index}`} career={career} />
+        ))}
+      </div>
+
+      {/* Row 4 - Scrolling Right (faster) */}
+      <div className="flex mb-3 animate-marquee-row-4">
+        {[...row4, ...row4, ...row4, ...row4, ...row4, ...row4].map((career, index) => (
+          <CareerCard key={`row4-${index}`} career={career} />
+        ))}
+      </div>
+
+      {/* Row 5 - Scrolling Left */}
+      <div className="flex animate-marquee-row-5">
+        {[...row5, ...row5, ...row5, ...row5, ...row5, ...row5].map((career, index) => (
+          <CareerCard key={`row5-${index}`} career={career} />
         ))}
       </div>
     </div>
@@ -89,18 +113,18 @@ const CareerCard: React.FC<CareerCardProps> = ({ career }) => {
   const IconComponent = career.icon;
   
   return (
-    <div className="flex-shrink-0 mx-2">
-      <div className="group relative px-4 py-3 rounded-xl bg-card/60 backdrop-blur-sm border border-border/50 hover:border-primary/50 transition-all duration-300 hover:scale-105 cursor-pointer min-w-[200px] md:min-w-[240px]">
+    <div className="flex-shrink-0 mx-1.5">
+      <div className="group relative px-3 py-2.5 rounded-lg bg-card/60 backdrop-blur-sm border border-border/50 hover:border-primary/50 transition-all duration-300 hover:scale-105 cursor-pointer min-w-[180px] md:min-w-[200px]">
         {/* Glow Effect on Hover */}
-        <div className={`absolute inset-0 rounded-xl bg-gradient-to-r ${career.color} opacity-0 group-hover:opacity-10 transition-opacity blur-sm`} />
+        <div className={`absolute inset-0 rounded-lg bg-gradient-to-r ${career.color} opacity-0 group-hover:opacity-10 transition-opacity blur-sm`} />
         
-        <div className="relative flex items-center gap-3">
-          <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${career.color} flex items-center justify-center group-hover:scale-110 transition-transform shadow-md`}>
-            <IconComponent className="h-5 w-5 text-white" />
+        <div className="relative flex items-center gap-2.5">
+          <div className={`w-8 h-8 rounded-md bg-gradient-to-br ${career.color} flex items-center justify-center group-hover:scale-110 transition-transform shadow-md`}>
+            <IconComponent className="h-4 w-4 text-white" />
           </div>
           <div className="flex flex-col">
-            <span className="text-sm font-semibold text-foreground whitespace-nowrap">{career.name}</span>
-            <span className="text-xs text-muted-foreground">{career.category}</span>
+            <span className="text-xs font-semibold text-foreground whitespace-nowrap">{career.name}</span>
+            <span className="text-[10px] text-muted-foreground">{career.category}</span>
           </div>
         </div>
       </div>

@@ -70,8 +70,7 @@ const Navbar = () => {
             }}
           >
             <Sparkles className="h-4 w-4 group-hover:animate-spin" />
-            <span className="text-sm font-semibold hidden sm:inline">Try EduAura AI</span>
-            <span className="text-sm font-semibold sm:hidden">AI</span>
+            <span className="text-sm font-semibold">Try EduAura AI</span>
             <Sparkles className="h-4 w-4 group-hover:animate-spin" />
           </button>
 
