@@ -1,10 +1,11 @@
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, MapPin, Clock, Briefcase, CheckCircle, Send } from 'lucide-react';
+import { ArrowLeft, MapPin, Clock, Briefcase, CheckCircle, Send, User, Mail, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import api from '../api/axios';
 
 const careerData: Record<string, {
   title: string;
@@ -192,6 +193,13 @@ const careerData: Record<string, {
 const CareerDetails = () => {
   const { id } = useParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    course: '',
+    coverLetter: '',
+  });
   
   const career = id ? careerData[id] : null;
 
@@ -210,10 +218,34 @@ const CareerDetails = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    if (!formData.name || !formData.email || !formData.phone) {
+      toast.error('Please fill all required fields');
+      return;
+    }
+
     setIsSubmitting(true);
-    await new Promise((r) => setTimeout(r, 1500));
-    setIsSubmitting(false);
-    toast.success('Application submitted successfully! We will contact you soon.');
+    try {
+      await api.post('/admissions/apply', {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        course: career.title,
+      });
+      toast.success('Application submitted successfully! We will contact you soon.');
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        course: '',
+        coverLetter: '',
+      });
+    } catch (error: any) {
+      console.error('Application API Error:', error);
+      toast.error(error?.response?.data?.message || 'Failed to submit application');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -297,11 +329,44 @@ const CareerDetails = () => {
             <div className="sticky top-24 p-6 bg-card rounded-2xl border border-border/50">
               <h3 className="text-lg font-semibold mb-4">Apply for this Position</h3>
               <form onSubmit={handleSubmit} className="space-y-4">
-                <Input placeholder="Full Name" required />
-                <Input type="email" placeholder="Email Address" required />
-                <Input type="tel" placeholder="Phone Number" required />
-                <Input placeholder="LinkedIn Profile URL" />
-                <Textarea placeholder="Cover Letter (Optional)" rows={4} />
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input 
+                    placeholder="Full Name" 
+                    required 
+                    className="pl-10"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  />
+                </div>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input 
+                    type="email" 
+                    placeholder="Email Address" 
+                    required 
+                    className="pl-10"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  />
+                </div>
+                <div className="relative">
+                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input 
+                    type="tel" 
+                    placeholder="Phone Number" 
+                    required 
+                    className="pl-10"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  />
+                </div>
+                <Textarea 
+                  placeholder="Cover Letter (Optional)" 
+                  rows={4} 
+                  value={formData.coverLetter}
+                  onChange={(e) => setFormData({ ...formData, coverLetter: e.target.value })}
+                />
                 <Button
                   type="submit"
                   disabled={isSubmitting}

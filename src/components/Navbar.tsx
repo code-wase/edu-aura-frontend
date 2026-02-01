@@ -45,11 +45,7 @@ const Navbar = () => {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? 'bg-background/80 backdrop-blur-lg shadow-lg shadow-primary/5 border-b border-border/50'
-          : 'bg-background/50 backdrop-blur-sm'
-      }`}
+      className="sticky top-0 z-50 transition-all duration-300 bg-[#0d1117] border-b border-slate-700/50"
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
         {/* LOGO */}
@@ -58,7 +54,7 @@ const Navbar = () => {
             <Sparkles className="h-6 w-6 text-primary animate-pulse-glow" />
             <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full" />
           </div>
-          <h1 className="text-xl font-bold text-gradient">
+          <h1 className="text-xl font-bold text-white">
             EduAura
           </h1>
         </Link>
@@ -67,7 +63,7 @@ const Navbar = () => {
         <div className="flex items-center gap-3">
           {/* AI Button - Like Reference */}
           <button
-            className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-primary/10 to-secondary/10 text-primary rounded-xl border border-primary/40 hover:border-primary hover:shadow-glow-sm transition-all duration-300 group"
+            className="flex items-center gap-2 px-4 py-2.5 bg-transparent text-primary rounded-xl border border-primary/60 hover:border-primary hover:shadow-glow-sm transition-all duration-300 group"
             onClick={() => {
               const event = new CustomEvent('openEduBot');
               window.dispatchEvent(event);
@@ -81,24 +77,24 @@ const Navbar = () => {
 
           {/* HAMBURGER MENU - Always visible */}
           <button
-            className="relative p-2.5 text-foreground hover:text-primary transition-colors rounded-lg hover:bg-primary/10"
+            className="relative p-2.5 text-white hover:text-primary transition-colors rounded-lg hover:bg-white/10"
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Toggle menu"
           >
-            {isOpen ? <X size={26} /> : <Menu size={26} />}
+            <Menu size={26} />
           </button>
         </div>
       </div>
 
       {/* NAVIGATION DRAWER - Side Panel */}
       <div
-        className={`fixed inset-0 z-40 transition-all duration-300 ${
+        className={`fixed inset-0 z-[60] transition-all duration-300 ${
           isOpen ? 'visible' : 'invisible'
         }`}
       >
         {/* Backdrop */}
         <div 
-          className={`absolute inset-0 bg-background/80 backdrop-blur-sm transition-opacity duration-300 ${
+          className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${
             isOpen ? 'opacity-100' : 'opacity-0'
           }`}
           onClick={() => setIsOpen(false)}
@@ -106,18 +102,19 @@ const Navbar = () => {
 
         {/* Drawer Panel */}
         <div
-          className={`absolute top-0 right-0 h-full w-80 max-w-[85vw] bg-card/95 backdrop-blur-xl border-l border-border/50 shadow-2xl transition-transform duration-300 ${
+          className={`absolute top-0 right-0 h-full w-80 max-w-[85vw] bg-[#0d1117] border-l border-slate-700/50 shadow-2xl transition-transform duration-300 ${
             isOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
         >
-          {/* Drawer Header */}
-          <div className="flex items-center justify-between p-6 border-b border-border/30">
+          {/* Drawer Header with Close Button */}
+          <div className="flex items-center justify-between p-6 border-b border-slate-700/50">
             <h2 className="text-lg font-bold text-primary">Navigation</h2>
             <button 
               onClick={() => setIsOpen(false)}
-              className="p-2 rounded-lg hover:bg-primary/10 transition-colors"
+              className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+              aria-label="Close menu"
             >
-              <X className="h-5 w-5 text-muted-foreground hover:text-primary" />
+              <X className="h-5 w-5 text-white hover:text-primary" />
             </button>
           </div>
 
@@ -128,21 +125,21 @@ const Navbar = () => {
                 key={link.path}
                 to={link.path}
                 onClick={() => setIsOpen(false)}
-                className="flex items-center gap-4 px-4 py-3.5 text-muted-foreground hover:text-foreground hover:bg-primary/10 rounded-xl transition-all duration-200 group"
+                className="flex items-center gap-4 px-4 py-3.5 text-slate-300 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 group"
                 style={{ animationDelay: `${index * 30}ms` }}
               >
-                <link.icon className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                <link.icon className="h-5 w-5 text-slate-400 group-hover:text-primary transition-colors" />
                 <span className="font-medium">{link.label}</span>
               </Link>
             ))}
           </nav>
 
           {/* Apply Now Button */}
-          <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-border/30 bg-card/80 backdrop-blur-sm">
+          <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-700/50 bg-[#0d1117]">
             <Link
               to="/admissions"
               onClick={() => setIsOpen(false)}
-              className="flex items-center justify-center gap-2 w-full py-3.5 text-primary-foreground bg-gradient-to-r from-primary to-secondary rounded-xl hover:shadow-glow-md transition-all font-semibold"
+              className="flex items-center justify-center gap-2 w-full py-3.5 text-white bg-gradient-to-r from-primary to-secondary rounded-xl hover:shadow-glow-md transition-all font-semibold"
             >
               <ClipboardList className="h-5 w-5" />
               Apply Now

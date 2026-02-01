@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { supabase } from '@/integrations/supabase/client';
+import api from '@/api/axios';
 import { toast } from 'sonner';
 
 const AdmissionModal: React.FC = () => {
@@ -40,27 +40,39 @@ const AdmissionModal: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!formData.name || !formData.email || !formData.phone || !formData.course) {
+      toast.error('Please fill all fields');
+      return;
+    }
+    
     setIsSubmitting(true);
 
     try {
-      const { error } = await supabase.from('admissions').insert({
+      await api.post('/admissions/apply', {
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
         course: formData.course,
       });
 
-      if (error) throw error;
-
       setIsSubmitted(true);
       toast.success('Application submitted successfully!');
+      
+      // Clear form
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        course: '',
+      });
       
       setTimeout(() => {
         handleClose();
       }, 2000);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Submission error:', error);
-      toast.error('Failed to submit. Please try again.');
+      toast.error(error?.response?.data?.message || 'Failed to submit. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
