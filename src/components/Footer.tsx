@@ -29,9 +29,9 @@ const Footer: React.FC = () => {
   ];
 
   const legalLinks = [
-    { path: '/terms', label: 'Terms & Conditions' },
-    { path: '/privacy', label: 'Privacy Policy' },
-    { path: '/resume-builder', label: 'Resume Builder' },
+    { path: '/degrees', label: 'Degree Programs' },
+    { path: '/careers', label: 'Career Paths' },
+    { path: '/jobs', label: 'Job Opportunities' },
   ];
 
   

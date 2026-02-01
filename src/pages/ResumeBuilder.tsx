@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FileText, Download, Star, Users, Briefcase, GraduationCap, Code, Palette, ChevronRight, Check, Sparkles } from 'lucide-react';
+import { FileText, Download, Star, Users, Briefcase, GraduationCap, Code, Palette, ChevronRight, Check, Sparkles, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -100,24 +100,135 @@ const templates: ResumeTemplate[] = [
   }
 ];
 
+const initialFormData = {
+  fullName: '',
+  email: '',
+  phone: '',
+  location: '',
+  linkedin: '',
+  portfolio: '',
+  summary: '',
+  experience: '',
+  education: '',
+  skills: '',
+  projects: '',
+  certifications: ''
+};
+
+// Template-specific PDF styles
+const getTemplateStyles = (templateId: string) => {
+  const styles: Record<string, string> = {
+    'clean-starter': `
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      @page { margin: 0; size: A4; }
+      body { font-family: 'Georgia', serif; line-height: 1.7; color: #333; padding: 50px; background: white; }
+      .header { text-align: center; margin-bottom: 35px; padding-bottom: 25px; border-bottom: 3px solid #3b82f6; }
+      .name { font-size: 36px; font-weight: bold; color: #1e40af; margin-bottom: 12px; letter-spacing: 2px; }
+      .contact { font-size: 13px; color: #64748b; }
+      .contact span { margin: 0 12px; }
+      .section { margin-bottom: 28px; }
+      .section-title { font-size: 16px; font-weight: bold; color: #1e40af; border-bottom: 2px solid #93c5fd; padding-bottom: 6px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+      .content { font-size: 13px; white-space: pre-line; color: #475569; }
+    `,
+    'modern-minimal': `
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      @page { margin: 0; size: A4; }
+      body { font-family: 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #1a1a1a; padding: 40px 50px; background: white; }
+      .header { margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #e5e5e5; }
+      .name { font-size: 28px; font-weight: 300; color: #000; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 4px; }
+      .contact { font-size: 11px; color: #666; letter-spacing: 1px; }
+      .contact span { margin-right: 20px; }
+      .section { margin-bottom: 24px; }
+      .section-title { font-size: 11px; font-weight: 600; color: #000; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 10px; padding-bottom: 5px; border-bottom: 1px solid #000; }
+      .content { font-size: 12px; white-space: pre-line; color: #333; }
+    `,
+    'professional-classic': `
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      @page { margin: 0; size: A4; }
+      body { font-family: 'Times New Roman', Times, serif; line-height: 1.5; color: #2c3e50; padding: 45px; background: white; }
+      .header { text-align: center; margin-bottom: 30px; background: linear-gradient(135deg, #059669, #0d9488); padding: 30px; color: white; margin: -45px -45px 30px -45px; }
+      .name { font-size: 32px; font-weight: bold; margin-bottom: 10px; text-shadow: 1px 1px 2px rgba(0,0,0,0.2); }
+      .contact { font-size: 12px; opacity: 0.95; }
+      .contact span { margin: 0 10px; }
+      .section { margin-bottom: 22px; }
+      .section-title { font-size: 15px; font-weight: bold; color: #047857; border-left: 4px solid #059669; padding-left: 12px; margin-bottom: 10px; text-transform: uppercase; }
+      .content { font-size: 12px; white-space: pre-line; padding-left: 16px; }
+    `,
+    'tech-pro': `
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      @page { margin: 0; size: A4; }
+      body { font-family: 'Consolas', 'Monaco', monospace; line-height: 1.6; color: #e2e8f0; padding: 0; background: #0f172a; }
+      .header { background: linear-gradient(135deg, #7c3aed, #db2777); padding: 35px 45px; margin-bottom: 25px; }
+      .name { font-size: 30px; font-weight: bold; color: white; margin-bottom: 10px; }
+      .contact { font-size: 12px; color: rgba(255,255,255,0.9); }
+      .contact span { margin-right: 15px; }
+      .main-content { padding: 0 45px 45px 45px; }
+      .section { margin-bottom: 22px; background: #1e293b; padding: 18px; border-radius: 8px; border-left: 3px solid #8b5cf6; }
+      .section-title { font-size: 13px; font-weight: bold; color: #a78bfa; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
+      .content { font-size: 12px; white-space: pre-line; color: #cbd5e1; }
+    `,
+    'executive-elite': `
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      @page { margin: 0; size: A4; }
+      body { font-family: 'Palatino Linotype', 'Book Antiqua', serif; line-height: 1.7; color: #1a1a1a; padding: 0; background: white; }
+      .sidebar { position: absolute; left: 0; top: 0; bottom: 0; width: 8px; background: linear-gradient(180deg, #f59e0b, #ea580c); }
+      .header { padding: 50px 50px 35px 60px; border-bottom: 2px solid #f59e0b; }
+      .name { font-size: 38px; font-weight: bold; color: #92400e; margin-bottom: 10px; }
+      .contact { font-size: 12px; color: #78716c; }
+      .contact span { margin-right: 18px; }
+      .main-content { padding: 30px 50px 50px 60px; }
+      .section { margin-bottom: 25px; }
+      .section-title { font-size: 14px; font-weight: bold; color: #b45309; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid #fcd34d; }
+      .content { font-size: 12px; white-space: pre-line; color: #44403c; }
+    `,
+    'senior-tech-lead': `
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      @page { margin: 0; size: A4; }
+      body { font-family: 'Segoe UI', Tahoma, sans-serif; line-height: 1.6; color: #1e1b4b; padding: 0; background: white; }
+      .header { background: linear-gradient(135deg, #4f46e5, #7c3aed); padding: 40px 50px; }
+      .name { font-size: 34px; font-weight: 600; color: white; margin-bottom: 10px; }
+      .contact { font-size: 12px; color: rgba(255,255,255,0.9); }
+      .contact span { margin-right: 15px; }
+      .main-content { padding: 35px 50px; }
+      .section { margin-bottom: 25px; }
+      .section-title { font-size: 12px; font-weight: 700; color: #4f46e5; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 12px; display: flex; align-items: center; }
+      .section-title::before { content: ''; width: 20px; height: 3px; background: linear-gradient(90deg, #4f46e5, #7c3aed); margin-right: 10px; }
+      .content { font-size: 12px; white-space: pre-line; color: #3730a3; }
+    `,
+    'creative-designer': `
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      @page { margin: 0; size: A4; }
+      body { font-family: 'Quicksand', 'Segoe UI', sans-serif; line-height: 1.7; color: #1f2937; padding: 0; background: linear-gradient(135deg, #fdf2f8, #fce7f3); }
+      .header { background: linear-gradient(135deg, #ec4899, #f43f5e); padding: 45px 50px; clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%); }
+      .name { font-size: 36px; font-weight: 700; color: white; margin-bottom: 12px; }
+      .contact { font-size: 12px; color: rgba(255,255,255,0.95); }
+      .contact span { margin-right: 15px; }
+      .main-content { padding: 20px 50px 50px 50px; }
+      .section { margin-bottom: 22px; background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 15px rgba(236,72,153,0.1); }
+      .section-title { font-size: 13px; font-weight: 700; color: #db2777; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
+      .content { font-size: 12px; white-space: pre-line; color: #6b7280; }
+    `,
+    'academic-scholar': `
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      @page { margin: 0; size: A4; }
+      body { font-family: 'Cambria', 'Georgia', serif; line-height: 1.8; color: #1e3a5f; padding: 50px; background: white; }
+      .header { margin-bottom: 35px; padding-bottom: 20px; border-bottom: 3px double #0d9488; }
+      .name { font-size: 32px; font-weight: bold; color: #134e4a; margin-bottom: 10px; font-variant: small-caps; }
+      .contact { font-size: 12px; color: #5f7782; font-style: italic; }
+      .contact span { margin-right: 15px; }
+      .section { margin-bottom: 25px; }
+      .section-title { font-size: 14px; font-weight: bold; color: #115e59; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; padding-bottom: 5px; border-bottom: 1px solid #99f6e4; }
+      .content { font-size: 12px; white-space: pre-line; color: #334155; text-align: justify; }
+    `
+  };
+  return styles[templateId] || styles['clean-starter'];
+};
+
 const ResumeBuilder = () => {
   const [selectedTemplate, setSelectedTemplate] = useState<ResumeTemplate | null>(null);
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [step, setStep] = useState<'browse' | 'fill' | 'preview'>('browse');
-  const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    phone: '',
-    location: '',
-    linkedin: '',
-    portfolio: '',
-    summary: '',
-    experience: '',
-    education: '',
-    skills: '',
-    projects: '',
-    certifications: ''
-  });
+  const [formData, setFormData] = useState(initialFormData);
 
   const stepsList = [
     { key: 'browse' as const, label: 'Choose Template', num: 1 },
@@ -146,41 +257,46 @@ const ResumeBuilder = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  const resetForm = () => {
+    setFormData(initialFormData);
+    setSelectedTemplate(null);
+    setStep('browse');
+  };
+
   const generatePDF = () => {
-    // Create resume content
+    if (!selectedTemplate) return;
+
+    const templateStyles = getTemplateStyles(selectedTemplate.id);
+    const needsMainContent = ['tech-pro', 'executive-elite', 'senior-tech-lead', 'creative-designer'].includes(selectedTemplate.id);
+    const hasSidebar = selectedTemplate.id === 'executive-elite';
+
     const resumeContent = `
+      <!DOCTYPE html>
       <html>
         <head>
-          <title>${formData.fullName} - Resume</title>
+          <meta charset="UTF-8">
+          <title>${formData.fullName || 'Resume'}</title>
           <style>
-            * { margin: 0; padding: 0; box-sizing: border-box; }
-            body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; padding: 40px; max-width: 800px; margin: 0 auto; }
-            .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #2563eb; padding-bottom: 20px; }
-            .name { font-size: 32px; font-weight: bold; color: #1e40af; margin-bottom: 10px; }
-            .contact { font-size: 14px; color: #666; }
-            .contact span { margin: 0 10px; }
-            .section { margin-bottom: 25px; }
-            .section-title { font-size: 18px; font-weight: bold; color: #1e40af; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-bottom: 10px; text-transform: uppercase; }
-            .content { font-size: 14px; white-space: pre-line; }
-            .skills-list { display: flex; flex-wrap: wrap; gap: 8px; }
-            .skill-tag { background: #e0e7ff; color: #3730a3; padding: 4px 12px; border-radius: 15px; font-size: 13px; }
+            ${templateStyles}
+            @media print {
+              body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            }
           </style>
         </head>
         <body>
+          ${hasSidebar ? '<div class="sidebar"></div>' : ''}
           <div class="header">
             <div class="name">${formData.fullName || 'Your Name'}</div>
             <div class="contact">
-              <span>${formData.email || 'email@example.com'}</span> |
-              <span>${formData.phone || '+91 XXXXX XXXXX'}</span> |
+              <span>${formData.email || 'email@example.com'}</span>
+              <span>${formData.phone || '+91 XXXXX XXXXX'}</span>
               <span>${formData.location || 'City, Country'}</span>
+              ${formData.linkedin ? `<span>${formData.linkedin}</span>` : ''}
+              ${formData.portfolio ? `<span>${formData.portfolio}</span>` : ''}
             </div>
-            ${formData.linkedin || formData.portfolio ? `
-              <div class="contact" style="margin-top: 5px;">
-                ${formData.linkedin ? `<span>LinkedIn: ${formData.linkedin}</span>` : ''}
-                ${formData.portfolio ? `<span>Portfolio: ${formData.portfolio}</span>` : ''}
-              </div>
-            ` : ''}
           </div>
+          
+          ${needsMainContent ? '<div class="main-content">' : ''}
           
           ${formData.summary ? `
             <div class="section">
@@ -223,20 +339,82 @@ const ResumeBuilder = () => {
               <div class="content">${formData.certifications}</div>
             </div>
           ` : ''}
+          
+          ${needsMainContent ? '</div>' : ''}
         </body>
       </html>
     `;
 
-    // Open print dialog for PDF
     const printWindow = window.open('', '_blank');
     if (printWindow) {
       printWindow.document.write(resumeContent);
       printWindow.document.close();
-      printWindow.focus();
+      
+      // Wait for content to load, then print and close
       setTimeout(() => {
         printWindow.print();
-      }, 250);
+        // Reset form after printing
+        setTimeout(() => {
+          resetForm();
+        }, 500);
+      }, 300);
     }
+  };
+
+  const getPreviewStyles = (templateId: string): React.CSSProperties => {
+    const previewStyles: Record<string, React.CSSProperties> = {
+      'clean-starter': { fontFamily: 'Georgia, serif', background: 'white' },
+      'modern-minimal': { fontFamily: 'Helvetica, Arial, sans-serif', background: 'white' },
+      'professional-classic': { fontFamily: 'Times New Roman, serif', background: 'white' },
+      'tech-pro': { fontFamily: 'Consolas, Monaco, monospace', background: '#0f172a', color: '#e2e8f0' },
+      'executive-elite': { fontFamily: 'Palatino Linotype, serif', background: 'white' },
+      'senior-tech-lead': { fontFamily: 'Segoe UI, sans-serif', background: 'white' },
+      'creative-designer': { fontFamily: 'Quicksand, sans-serif', background: 'linear-gradient(135deg, #fdf2f8, #fce7f3)' },
+      'academic-scholar': { fontFamily: 'Cambria, Georgia, serif', background: 'white' }
+    };
+    return previewStyles[templateId] || previewStyles['clean-starter'];
+  };
+
+  const getHeaderStyles = (templateId: string): React.CSSProperties => {
+    const headerStyles: Record<string, React.CSSProperties> = {
+      'clean-starter': { textAlign: 'center', borderBottom: '3px solid #3b82f6', paddingBottom: '24px', marginBottom: '24px' },
+      'modern-minimal': { borderBottom: '1px solid #e5e5e5', paddingBottom: '16px', marginBottom: '24px' },
+      'professional-classic': { textAlign: 'center', background: 'linear-gradient(135deg, #059669, #0d9488)', padding: '24px', color: 'white', margin: '-32px -32px 24px -32px' },
+      'tech-pro': { background: 'linear-gradient(135deg, #7c3aed, #db2777)', padding: '24px', margin: '-32px -32px 24px -32px' },
+      'executive-elite': { borderBottom: '2px solid #f59e0b', paddingBottom: '24px', marginBottom: '24px', paddingLeft: '12px', borderLeft: '6px solid #f59e0b' },
+      'senior-tech-lead': { background: 'linear-gradient(135deg, #4f46e5, #7c3aed)', padding: '24px', margin: '-32px -32px 24px -32px' },
+      'creative-designer': { background: 'linear-gradient(135deg, #ec4899, #f43f5e)', padding: '28px', clipPath: 'polygon(0 0, 100% 0, 100% 85%, 0 100%)', margin: '-32px -32px 16px -32px' },
+      'academic-scholar': { borderBottom: '3px double #0d9488', paddingBottom: '20px', marginBottom: '24px' }
+    };
+    return headerStyles[templateId] || headerStyles['clean-starter'];
+  };
+
+  const getNameColor = (templateId: string): string => {
+    const colors: Record<string, string> = {
+      'clean-starter': '#1e40af',
+      'modern-minimal': '#000',
+      'professional-classic': 'white',
+      'tech-pro': 'white',
+      'executive-elite': '#92400e',
+      'senior-tech-lead': 'white',
+      'creative-designer': 'white',
+      'academic-scholar': '#134e4a'
+    };
+    return colors[templateId] || '#1e40af';
+  };
+
+  const getSectionTitleColor = (templateId: string): string => {
+    const colors: Record<string, string> = {
+      'clean-starter': '#1e40af',
+      'modern-minimal': '#000',
+      'professional-classic': '#047857',
+      'tech-pro': '#a78bfa',
+      'executive-elite': '#b45309',
+      'senior-tech-lead': '#4f46e5',
+      'creative-designer': '#db2777',
+      'academic-scholar': '#115e59'
+    };
+    return colors[templateId] || '#1e40af';
   };
 
   return (
@@ -585,11 +763,15 @@ Meta Frontend Developer Certificate | Meta | 2021"
               <div className="flex items-center justify-between mb-8">
                 <div>
                   <h2 className="text-2xl font-bold text-foreground">Preview & Download</h2>
-                  <p className="text-muted-foreground">Review your resume and download in HD PDF</p>
+                  <p className="text-muted-foreground">Template: {selectedTemplate.name}</p>
                 </div>
                 <div className="flex gap-3">
                   <Button variant="outline" onClick={() => setStep('fill')}>
                     Edit Details
+                  </Button>
+                  <Button variant="outline" onClick={resetForm}>
+                    <RotateCcw className="h-4 w-4 mr-2" />
+                    Start New
                   </Button>
                   <Button onClick={generatePDF} className="bg-primary">
                     <Download className="h-4 w-4 mr-2" />
@@ -598,19 +780,25 @@ Meta Frontend Developer Certificate | Meta | 2021"
                 </div>
               </div>
 
-              {/* Resume Preview */}
+              {/* Resume Preview - Template Specific */}
               <Card className="border-border/50 overflow-hidden">
-                <div className="bg-white p-8 text-gray-900">
+                <div 
+                  className="p-8 text-gray-900 min-h-[600px]"
+                  style={getPreviewStyles(selectedTemplate.id)}
+                >
                   {/* Header */}
-                  <div className="text-center border-b-2 border-blue-600 pb-6 mb-6">
-                    <h1 className="text-3xl font-bold text-blue-800 mb-2">
+                  <div style={getHeaderStyles(selectedTemplate.id)}>
+                    <h1 
+                      className="text-3xl font-bold mb-2"
+                      style={{ color: getNameColor(selectedTemplate.id) }}
+                    >
                       {formData.fullName || 'Your Name'}
                     </h1>
-                    <p className="text-gray-600">
+                    <p className={selectedTemplate.id === 'tech-pro' || selectedTemplate.id === 'professional-classic' || selectedTemplate.id === 'senior-tech-lead' || selectedTemplate.id === 'creative-designer' ? 'text-white/90 text-sm' : 'text-gray-600 text-sm'}>
                       {formData.email || 'email@example.com'} | {formData.phone || '+91 XXXXX XXXXX'} | {formData.location || 'City, Country'}
                     </p>
                     {(formData.linkedin || formData.portfolio) && (
-                      <p className="text-gray-600 text-sm mt-1">
+                      <p className={selectedTemplate.id === 'tech-pro' || selectedTemplate.id === 'professional-classic' || selectedTemplate.id === 'senior-tech-lead' || selectedTemplate.id === 'creative-designer' ? 'text-white/80 text-xs mt-1' : 'text-gray-500 text-xs mt-1'}>
                         {formData.linkedin && <span>LinkedIn: {formData.linkedin}</span>}
                         {formData.linkedin && formData.portfolio && ' | '}
                         {formData.portfolio && <span>Portfolio: {formData.portfolio}</span>}
@@ -619,65 +807,85 @@ Meta Frontend Developer Certificate | Meta | 2021"
                   </div>
 
                   {/* Sections */}
-                  {formData.summary && (
-                    <div className="mb-6">
-                      <h2 className="text-lg font-bold text-blue-800 border-b border-gray-200 pb-1 mb-2 uppercase">
-                        Professional Summary
-                      </h2>
-                      <p className="text-sm whitespace-pre-line">{formData.summary}</p>
-                    </div>
-                  )}
+                  <div className={selectedTemplate.id === 'creative-designer' ? 'space-y-4' : ''}>
+                    {formData.summary && (
+                      <div className={`mb-5 ${selectedTemplate.id === 'tech-pro' ? 'bg-slate-800 p-4 rounded-lg border-l-2 border-purple-500' : ''} ${selectedTemplate.id === 'creative-designer' ? 'bg-white p-4 rounded-xl shadow-sm' : ''}`}>
+                        <h2 
+                          className="text-base font-bold border-b border-gray-200 pb-1 mb-2 uppercase tracking-wide"
+                          style={{ color: getSectionTitleColor(selectedTemplate.id), borderColor: selectedTemplate.id === 'tech-pro' ? 'transparent' : undefined }}
+                        >
+                          Professional Summary
+                        </h2>
+                        <p className={`text-sm whitespace-pre-line ${selectedTemplate.id === 'tech-pro' ? 'text-slate-300' : ''}`}>{formData.summary}</p>
+                      </div>
+                    )}
 
-                  {formData.experience && (
-                    <div className="mb-6">
-                      <h2 className="text-lg font-bold text-blue-800 border-b border-gray-200 pb-1 mb-2 uppercase">
-                        Work Experience
-                      </h2>
-                      <p className="text-sm whitespace-pre-line">{formData.experience}</p>
-                    </div>
-                  )}
+                    {formData.experience && (
+                      <div className={`mb-5 ${selectedTemplate.id === 'tech-pro' ? 'bg-slate-800 p-4 rounded-lg border-l-2 border-purple-500' : ''} ${selectedTemplate.id === 'creative-designer' ? 'bg-white p-4 rounded-xl shadow-sm' : ''}`}>
+                        <h2 
+                          className="text-base font-bold border-b border-gray-200 pb-1 mb-2 uppercase tracking-wide"
+                          style={{ color: getSectionTitleColor(selectedTemplate.id), borderColor: selectedTemplate.id === 'tech-pro' ? 'transparent' : undefined }}
+                        >
+                          Work Experience
+                        </h2>
+                        <p className={`text-sm whitespace-pre-line ${selectedTemplate.id === 'tech-pro' ? 'text-slate-300' : ''}`}>{formData.experience}</p>
+                      </div>
+                    )}
 
-                  {formData.education && (
-                    <div className="mb-6">
-                      <h2 className="text-lg font-bold text-blue-800 border-b border-gray-200 pb-1 mb-2 uppercase">
-                        Education
-                      </h2>
-                      <p className="text-sm whitespace-pre-line">{formData.education}</p>
-                    </div>
-                  )}
+                    {formData.education && (
+                      <div className={`mb-5 ${selectedTemplate.id === 'tech-pro' ? 'bg-slate-800 p-4 rounded-lg border-l-2 border-purple-500' : ''} ${selectedTemplate.id === 'creative-designer' ? 'bg-white p-4 rounded-xl shadow-sm' : ''}`}>
+                        <h2 
+                          className="text-base font-bold border-b border-gray-200 pb-1 mb-2 uppercase tracking-wide"
+                          style={{ color: getSectionTitleColor(selectedTemplate.id), borderColor: selectedTemplate.id === 'tech-pro' ? 'transparent' : undefined }}
+                        >
+                          Education
+                        </h2>
+                        <p className={`text-sm whitespace-pre-line ${selectedTemplate.id === 'tech-pro' ? 'text-slate-300' : ''}`}>{formData.education}</p>
+                      </div>
+                    )}
 
-                  {formData.skills && (
-                    <div className="mb-6">
-                      <h2 className="text-lg font-bold text-blue-800 border-b border-gray-200 pb-1 mb-2 uppercase">
-                        Skills
-                      </h2>
-                      <p className="text-sm whitespace-pre-line">{formData.skills}</p>
-                    </div>
-                  )}
+                    {formData.skills && (
+                      <div className={`mb-5 ${selectedTemplate.id === 'tech-pro' ? 'bg-slate-800 p-4 rounded-lg border-l-2 border-purple-500' : ''} ${selectedTemplate.id === 'creative-designer' ? 'bg-white p-4 rounded-xl shadow-sm' : ''}`}>
+                        <h2 
+                          className="text-base font-bold border-b border-gray-200 pb-1 mb-2 uppercase tracking-wide"
+                          style={{ color: getSectionTitleColor(selectedTemplate.id), borderColor: selectedTemplate.id === 'tech-pro' ? 'transparent' : undefined }}
+                        >
+                          Skills
+                        </h2>
+                        <p className={`text-sm whitespace-pre-line ${selectedTemplate.id === 'tech-pro' ? 'text-slate-300' : ''}`}>{formData.skills}</p>
+                      </div>
+                    )}
 
-                  {formData.projects && (
-                    <div className="mb-6">
-                      <h2 className="text-lg font-bold text-blue-800 border-b border-gray-200 pb-1 mb-2 uppercase">
-                        Projects
-                      </h2>
-                      <p className="text-sm whitespace-pre-line">{formData.projects}</p>
-                    </div>
-                  )}
+                    {formData.projects && (
+                      <div className={`mb-5 ${selectedTemplate.id === 'tech-pro' ? 'bg-slate-800 p-4 rounded-lg border-l-2 border-purple-500' : ''} ${selectedTemplate.id === 'creative-designer' ? 'bg-white p-4 rounded-xl shadow-sm' : ''}`}>
+                        <h2 
+                          className="text-base font-bold border-b border-gray-200 pb-1 mb-2 uppercase tracking-wide"
+                          style={{ color: getSectionTitleColor(selectedTemplate.id), borderColor: selectedTemplate.id === 'tech-pro' ? 'transparent' : undefined }}
+                        >
+                          Projects
+                        </h2>
+                        <p className={`text-sm whitespace-pre-line ${selectedTemplate.id === 'tech-pro' ? 'text-slate-300' : ''}`}>{formData.projects}</p>
+                      </div>
+                    )}
 
-                  {formData.certifications && (
-                    <div className="mb-6">
-                      <h2 className="text-lg font-bold text-blue-800 border-b border-gray-200 pb-1 mb-2 uppercase">
-                        Certifications
-                      </h2>
-                      <p className="text-sm whitespace-pre-line">{formData.certifications}</p>
-                    </div>
-                  )}
+                    {formData.certifications && (
+                      <div className={`mb-5 ${selectedTemplate.id === 'tech-pro' ? 'bg-slate-800 p-4 rounded-lg border-l-2 border-purple-500' : ''} ${selectedTemplate.id === 'creative-designer' ? 'bg-white p-4 rounded-xl shadow-sm' : ''}`}>
+                        <h2 
+                          className="text-base font-bold border-b border-gray-200 pb-1 mb-2 uppercase tracking-wide"
+                          style={{ color: getSectionTitleColor(selectedTemplate.id), borderColor: selectedTemplate.id === 'tech-pro' ? 'transparent' : undefined }}
+                        >
+                          Certifications
+                        </h2>
+                        <p className={`text-sm whitespace-pre-line ${selectedTemplate.id === 'tech-pro' ? 'text-slate-300' : ''}`}>{formData.certifications}</p>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </Card>
 
               <div className="mt-6 p-4 bg-card/50 rounded-lg border border-border/50">
                 <p className="text-sm text-muted-foreground text-center">
-                  💡 Tip: Click "Download PDF" to save your resume. Use Ctrl+P (or Cmd+P on Mac) and select "Save as PDF" for the best quality.
+                  💡 Tip: Click "Download PDF" and select "Save as PDF" in the print dialog for HD quality output.
                 </p>
               </div>
             </div>

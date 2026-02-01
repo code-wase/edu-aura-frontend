@@ -14,7 +14,10 @@ import {
   ClipboardList,
   Phone,
   Image,
-  Info
+  Info,
+  FileText,
+  ScrollText,
+  Shield
 } from 'lucide-react';
 
 const Navbar = () => {
@@ -41,6 +44,9 @@ const Navbar = () => {
     { path: '/contact', label: 'Contact', icon: Phone },
     { path: '/gallery', label: 'Gallery', icon: Image },
     { path: '/about', label: 'About', icon: Info },
+    { path: '/resume-builder', label: 'Resume Builder', icon: FileText },
+    { path: '/terms', label: 'Terms & Conditions', icon: ScrollText },
+    { path: '/privacy', label: 'Privacy Policy', icon: Shield },
   ];
 
   return (
