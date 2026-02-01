@@ -15,6 +15,9 @@ import CareerDetails from '../pages/CareerDetails';
 import Degrees from '../pages/Degrees';
 import DegreeDetails from '../pages/DegreeDetails';
 import Jobs from '../pages/Jobs';
+import TermsAndConditions from '../pages/TermsAndConditions';
+import PrivacyPolicy from '../pages/PrivacyPolicy';
+import ResumeBuilder from '../pages/ResumeBuilder';
 
 const AppRoutes = () => {
   return (
@@ -35,6 +38,9 @@ const AppRoutes = () => {
         <Route path='/degrees' element={<Degrees />} />
         <Route path='/degrees/:id' element={<DegreeDetails />} />
         <Route path='/jobs' element={<Jobs />} />
+        <Route path='/terms' element={<TermsAndConditions />} />
+        <Route path='/privacy' element={<PrivacyPolicy />} />
+        <Route path='/resume-builder' element={<ResumeBuilder />} />
       </Route>
     </Routes>
   );

@@ -268,11 +268,11 @@ export default {
         'marquee-fast': 'marquee-fast 20s linear infinite',
         'marquee-left': 'marquee-left 30s linear infinite',
         'marquee-right': 'marquee-right 30s linear infinite',
-        'marquee-row-1': 'marquee-row-1 12s linear infinite',
-        'marquee-row-2': 'marquee-row-2 14s linear infinite',
-        'marquee-row-3': 'marquee-row-3 10s linear infinite',
-        'marquee-row-4': 'marquee-row-4 13s linear infinite',
-        'marquee-row-5': 'marquee-row-5 11s linear infinite',
+        'marquee-row-1': 'marquee-row-1 6s linear infinite',
+        'marquee-row-2': 'marquee-row-2 7s linear infinite',
+        'marquee-row-3': 'marquee-row-3 5s linear infinite',
+        'marquee-row-4': 'marquee-row-4 6.5s linear infinite',
+        'marquee-row-5': 'marquee-row-5 5.5s linear infinite',
       },
 
       /* ===============================
