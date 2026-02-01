@@ -115,126 +115,419 @@ const initialFormData = {
   certifications: ''
 };
 
-// Template-specific PDF styles
-const getTemplateStyles = (templateId: string) => {
-  const styles: Record<string, string> = {
-    'clean-starter': `
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      @page { margin: 0; size: A4; }
-      body { font-family: 'Georgia', serif; line-height: 1.7; color: #333; padding: 50px; background: white; }
-      .header { text-align: center; margin-bottom: 35px; padding-bottom: 25px; border-bottom: 3px solid #3b82f6; }
-      .name { font-size: 36px; font-weight: bold; color: #1e40af; margin-bottom: 12px; letter-spacing: 2px; }
-      .contact { font-size: 13px; color: #64748b; }
-      .contact span { margin: 0 12px; }
-      .section { margin-bottom: 28px; }
-      .section-title { font-size: 16px; font-weight: bold; color: #1e40af; border-bottom: 2px solid #93c5fd; padding-bottom: 6px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
-      .content { font-size: 13px; white-space: pre-line; color: #475569; }
-    `,
-    'modern-minimal': `
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      @page { margin: 0; size: A4; }
-      body { font-family: 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #1a1a1a; padding: 40px 50px; background: white; }
-      .header { margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #e5e5e5; }
-      .name { font-size: 28px; font-weight: 300; color: #000; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 4px; }
-      .contact { font-size: 11px; color: #666; letter-spacing: 1px; }
-      .contact span { margin-right: 20px; }
-      .section { margin-bottom: 24px; }
-      .section-title { font-size: 11px; font-weight: 600; color: #000; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 10px; padding-bottom: 5px; border-bottom: 1px solid #000; }
-      .content { font-size: 12px; white-space: pre-line; color: #333; }
-    `,
-    'professional-classic': `
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      @page { margin: 0; size: A4; }
-      body { font-family: 'Times New Roman', Times, serif; line-height: 1.5; color: #2c3e50; padding: 45px; background: white; }
-      .header { text-align: center; margin-bottom: 30px; background: linear-gradient(135deg, #059669, #0d9488); padding: 30px; color: white; margin: -45px -45px 30px -45px; }
-      .name { font-size: 32px; font-weight: bold; margin-bottom: 10px; text-shadow: 1px 1px 2px rgba(0,0,0,0.2); }
-      .contact { font-size: 12px; opacity: 0.95; }
-      .contact span { margin: 0 10px; }
-      .section { margin-bottom: 22px; }
-      .section-title { font-size: 15px; font-weight: bold; color: #047857; border-left: 4px solid #059669; padding-left: 12px; margin-bottom: 10px; text-transform: uppercase; }
-      .content { font-size: 12px; white-space: pre-line; padding-left: 16px; }
-    `,
-    'tech-pro': `
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      @page { margin: 0; size: A4; }
-      body { font-family: 'Consolas', 'Monaco', monospace; line-height: 1.6; color: #e2e8f0; padding: 0; background: #0f172a; }
-      .header { background: linear-gradient(135deg, #7c3aed, #db2777); padding: 35px 45px; margin-bottom: 25px; }
-      .name { font-size: 30px; font-weight: bold; color: white; margin-bottom: 10px; }
-      .contact { font-size: 12px; color: rgba(255,255,255,0.9); }
-      .contact span { margin-right: 15px; }
-      .main-content { padding: 0 45px 45px 45px; }
-      .section { margin-bottom: 22px; background: #1e293b; padding: 18px; border-radius: 8px; border-left: 3px solid #8b5cf6; }
-      .section-title { font-size: 13px; font-weight: bold; color: #a78bfa; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
-      .content { font-size: 12px; white-space: pre-line; color: #cbd5e1; }
-    `,
-    'executive-elite': `
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      @page { margin: 0; size: A4; }
-      body { font-family: 'Palatino Linotype', 'Book Antiqua', serif; line-height: 1.7; color: #1a1a1a; padding: 0; background: white; }
-      .sidebar { position: absolute; left: 0; top: 0; bottom: 0; width: 8px; background: linear-gradient(180deg, #f59e0b, #ea580c); }
-      .header { padding: 50px 50px 35px 60px; border-bottom: 2px solid #f59e0b; }
-      .name { font-size: 38px; font-weight: bold; color: #92400e; margin-bottom: 10px; }
-      .contact { font-size: 12px; color: #78716c; }
-      .contact span { margin-right: 18px; }
-      .main-content { padding: 30px 50px 50px 60px; }
-      .section { margin-bottom: 25px; }
-      .section-title { font-size: 14px; font-weight: bold; color: #b45309; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid #fcd34d; }
-      .content { font-size: 12px; white-space: pre-line; color: #44403c; }
-    `,
-    'senior-tech-lead': `
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      @page { margin: 0; size: A4; }
-      body { font-family: 'Segoe UI', Tahoma, sans-serif; line-height: 1.6; color: #1e1b4b; padding: 0; background: white; }
-      .header { background: linear-gradient(135deg, #4f46e5, #7c3aed); padding: 40px 50px; }
-      .name { font-size: 34px; font-weight: 600; color: white; margin-bottom: 10px; }
-      .contact { font-size: 12px; color: rgba(255,255,255,0.9); }
-      .contact span { margin-right: 15px; }
-      .main-content { padding: 35px 50px; }
-      .section { margin-bottom: 25px; }
-      .section-title { font-size: 12px; font-weight: 700; color: #4f46e5; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 12px; display: flex; align-items: center; }
-      .section-title::before { content: ''; width: 20px; height: 3px; background: linear-gradient(90deg, #4f46e5, #7c3aed); margin-right: 10px; }
-      .content { font-size: 12px; white-space: pre-line; color: #3730a3; }
-    `,
-    'creative-designer': `
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      @page { margin: 0; size: A4; }
-      body { font-family: 'Quicksand', 'Segoe UI', sans-serif; line-height: 1.7; color: #1f2937; padding: 0; background: linear-gradient(135deg, #fdf2f8, #fce7f3); }
-      .header { background: linear-gradient(135deg, #ec4899, #f43f5e); padding: 45px 50px; clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%); }
-      .name { font-size: 36px; font-weight: 700; color: white; margin-bottom: 12px; }
-      .contact { font-size: 12px; color: rgba(255,255,255,0.95); }
-      .contact span { margin-right: 15px; }
-      .main-content { padding: 20px 50px 50px 50px; }
-      .section { margin-bottom: 22px; background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 15px rgba(236,72,153,0.1); }
-      .section-title { font-size: 13px; font-weight: 700; color: #db2777; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
-      .content { font-size: 12px; white-space: pre-line; color: #6b7280; }
-    `,
-    'academic-scholar': `
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      @page { margin: 0; size: A4; }
-      body { font-family: 'Cambria', 'Georgia', serif; line-height: 1.8; color: #1e3a5f; padding: 50px; background: white; }
-      .header { margin-bottom: 35px; padding-bottom: 20px; border-bottom: 3px double #0d9488; }
-      .name { font-size: 32px; font-weight: bold; color: #134e4a; margin-bottom: 10px; font-variant: small-caps; }
-      .contact { font-size: 12px; color: #5f7782; font-style: italic; }
-      .contact span { margin-right: 15px; }
-      .section { margin-bottom: 25px; }
-      .section-title { font-size: 14px; font-weight: bold; color: #115e59; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; padding-bottom: 5px; border-bottom: 1px solid #99f6e4; }
-      .content { font-size: 12px; white-space: pre-line; color: #334155; text-align: justify; }
-    `
-  };
-  return styles[templateId] || styles['clean-starter'];
-};
+interface FormData {
+  fullName: string;
+  email: string;
+  phone: string;
+  location: string;
+  linkedin: string;
+  portfolio: string;
+  summary: string;
+  experience: string;
+  education: string;
+  skills: string;
+  projects: string;
+  certifications: string;
+}
+
+// Template 1: Clean Starter - Centered, Simple Blue Theme
+const getCleanStarterHTML = (data: FormData) => `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>${data.fullName || 'Resume'}</title>
+  <style>
+    @page { margin: 0; size: A4; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Georgia', serif; line-height: 1.7; color: #1e293b; padding: 50px; background: white; }
+    .header { text-align: center; margin-bottom: 35px; padding-bottom: 25px; border-bottom: 3px solid #3b82f6; }
+    .name { font-size: 38px; font-weight: bold; color: #1e40af; margin-bottom: 12px; letter-spacing: 2px; }
+    .contact { font-size: 13px; color: #64748b; }
+    .contact span { margin: 0 8px; }
+    .section { margin-bottom: 28px; }
+    .section-title { font-size: 16px; font-weight: bold; color: #1e40af; border-bottom: 2px solid #93c5fd; padding-bottom: 6px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+    .content { font-size: 13px; white-space: pre-line; color: #475569; }
+    @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="name">${data.fullName || 'Your Name'}</div>
+    <div class="contact">
+      <span>✉ ${data.email || 'email@example.com'}</span>
+      <span>📞 ${data.phone || '+91 XXXXX'}</span>
+      <span>📍 ${data.location || 'City'}</span>
+    </div>
+    ${data.linkedin || data.portfolio ? `<div class="contact" style="margin-top:8px;">${data.linkedin ? `<span>🔗 ${data.linkedin}</span>` : ''}${data.portfolio ? `<span>🌐 ${data.portfolio}</span>` : ''}</div>` : ''}
+  </div>
+  ${data.summary ? `<div class="section"><div class="section-title">Professional Summary</div><div class="content">${data.summary}</div></div>` : ''}
+  ${data.education ? `<div class="section"><div class="section-title">Education</div><div class="content">${data.education}</div></div>` : ''}
+  ${data.skills ? `<div class="section"><div class="section-title">Skills</div><div class="content">${data.skills}</div></div>` : ''}
+  ${data.projects ? `<div class="section"><div class="section-title">Projects</div><div class="content">${data.projects}</div></div>` : ''}
+  ${data.experience ? `<div class="section"><div class="section-title">Experience</div><div class="content">${data.experience}</div></div>` : ''}
+  ${data.certifications ? `<div class="section"><div class="section-title">Certifications</div><div class="content">${data.certifications}</div></div>` : ''}
+</body>
+</html>`;
+
+// Template 2: Modern Minimal - Ultra Clean, Sans-serif
+const getModernMinimalHTML = (data: FormData) => `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>${data.fullName || 'Resume'}</title>
+  <style>
+    @page { margin: 0; size: A4; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #111; padding: 60px; background: white; }
+    .header { margin-bottom: 40px; }
+    .name { font-size: 32px; font-weight: 300; color: #000; text-transform: uppercase; letter-spacing: 6px; margin-bottom: 15px; }
+    .divider { width: 60px; height: 2px; background: #000; margin-bottom: 15px; }
+    .contact { font-size: 11px; color: #555; letter-spacing: 1px; }
+    .contact-item { display: inline-block; margin-right: 25px; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 4px; color: #000; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 1px solid #ddd; }
+    .content { font-size: 12px; white-space: pre-line; color: #333; line-height: 1.8; }
+    @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="name">${data.fullName || 'Your Name'}</div>
+    <div class="divider"></div>
+    <div class="contact">
+      <span class="contact-item">${data.email || 'email@example.com'}</span>
+      <span class="contact-item">${data.phone || '+91 XXXXX'}</span>
+      <span class="contact-item">${data.location || 'City'}</span>
+      ${data.linkedin ? `<span class="contact-item">${data.linkedin}</span>` : ''}
+      ${data.portfolio ? `<span class="contact-item">${data.portfolio}</span>` : ''}
+    </div>
+  </div>
+  ${data.summary ? `<div class="section"><div class="section-title">About</div><div class="content">${data.summary}</div></div>` : ''}
+  ${data.experience ? `<div class="section"><div class="section-title">Experience</div><div class="content">${data.experience}</div></div>` : ''}
+  ${data.education ? `<div class="section"><div class="section-title">Education</div><div class="content">${data.education}</div></div>` : ''}
+  ${data.skills ? `<div class="section"><div class="section-title">Skills</div><div class="content">${data.skills}</div></div>` : ''}
+  ${data.projects ? `<div class="section"><div class="section-title">Projects</div><div class="content">${data.projects}</div></div>` : ''}
+  ${data.certifications ? `<div class="section"><div class="section-title">Certifications</div><div class="content">${data.certifications}</div></div>` : ''}
+</body>
+</html>`;
+
+// Template 3: Professional Classic - Two Column with Green Header
+const getProfessionalClassicHTML = (data: FormData) => `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>${data.fullName || 'Resume'}</title>
+  <style>
+    @page { margin: 0; size: A4; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Cambria', Georgia, serif; line-height: 1.6; color: #2c3e50; background: white; }
+    .header { background: linear-gradient(135deg, #059669, #0d9488); padding: 40px; color: white; }
+    .name { font-size: 36px; font-weight: bold; margin-bottom: 8px; }
+    .title { font-size: 16px; opacity: 0.9; margin-bottom: 15px; font-style: italic; }
+    .contact-row { display: flex; flex-wrap: wrap; gap: 20px; font-size: 12px; }
+    .contact-row span { opacity: 0.95; }
+    .main { display: flex; padding: 30px; gap: 30px; }
+    .left { flex: 1; }
+    .right { width: 200px; }
+    .section { margin-bottom: 25px; }
+    .section-title { font-size: 14px; font-weight: bold; color: #059669; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; padding-bottom: 5px; border-bottom: 2px solid #059669; }
+    .content { font-size: 12px; white-space: pre-line; }
+    .sidebar-section { background: #f0fdf4; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
+    .sidebar-title { font-size: 12px; font-weight: bold; color: #059669; margin-bottom: 8px; text-transform: uppercase; }
+    .sidebar-content { font-size: 11px; white-space: pre-line; color: #475569; }
+    @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="name">${data.fullName || 'Your Name'}</div>
+    <div class="title">${data.summary ? data.summary.split('.')[0] : 'Professional'}</div>
+    <div class="contact-row">
+      <span>✉ ${data.email || 'email@example.com'}</span>
+      <span>📞 ${data.phone || '+91 XXXXX'}</span>
+      <span>📍 ${data.location || 'City'}</span>
+      ${data.linkedin ? `<span>🔗 ${data.linkedin}</span>` : ''}
+    </div>
+  </div>
+  <div class="main">
+    <div class="left">
+      ${data.summary ? `<div class="section"><div class="section-title">Profile</div><div class="content">${data.summary}</div></div>` : ''}
+      ${data.experience ? `<div class="section"><div class="section-title">Work Experience</div><div class="content">${data.experience}</div></div>` : ''}
+      ${data.projects ? `<div class="section"><div class="section-title">Key Projects</div><div class="content">${data.projects}</div></div>` : ''}
+    </div>
+    <div class="right">
+      ${data.education ? `<div class="sidebar-section"><div class="sidebar-title">Education</div><div class="sidebar-content">${data.education}</div></div>` : ''}
+      ${data.skills ? `<div class="sidebar-section"><div class="sidebar-title">Skills</div><div class="sidebar-content">${data.skills}</div></div>` : ''}
+      ${data.certifications ? `<div class="sidebar-section"><div class="sidebar-title">Certifications</div><div class="sidebar-content">${data.certifications}</div></div>` : ''}
+    </div>
+  </div>
+</body>
+</html>`;
+
+// Template 4: Tech Pro - Dark Theme Developer Style
+const getTechProHTML = (data: FormData) => `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>${data.fullName || 'Resume'}</title>
+  <style>
+    @page { margin: 0; size: A4; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Fira Code', 'Consolas', monospace; line-height: 1.6; color: #e2e8f0; background: #0f172a; }
+    .header { background: linear-gradient(135deg, #7c3aed, #db2777); padding: 40px; }
+    .name { font-size: 32px; font-weight: bold; color: white; margin-bottom: 5px; }
+    .tagline { color: rgba(255,255,255,0.8); font-size: 14px; margin-bottom: 15px; }
+    .contact { display: flex; flex-wrap: wrap; gap: 15px; font-size: 11px; color: rgba(255,255,255,0.9); }
+    .main { padding: 30px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .section { background: #1e293b; padding: 20px; border-radius: 10px; border-left: 4px solid #8b5cf6; margin-bottom: 20px; }
+    .section-title { font-size: 12px; color: #a78bfa; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .section-title::before { content: '//'; color: #6366f1; }
+    .content { font-size: 11px; white-space: pre-line; color: #cbd5e1; }
+    .full-width { grid-column: 1 / -1; }
+    .code-tag { display: inline-block; background: #3730a3; color: #c4b5fd; padding: 2px 8px; border-radius: 4px; font-size: 10px; margin: 2px; }
+    @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="name">&lt;${data.fullName || 'Developer'} /&gt;</div>
+    <div class="tagline">${data.summary ? data.summary.split('.')[0] : 'Full Stack Developer'}</div>
+    <div class="contact">
+      <span>📧 ${data.email || 'email@example.com'}</span>
+      <span>📱 ${data.phone || '+91 XXXXX'}</span>
+      <span>📍 ${data.location || 'City'}</span>
+      ${data.linkedin ? `<span>💼 ${data.linkedin}</span>` : ''}
+      ${data.portfolio ? `<span>🌐 ${data.portfolio}</span>` : ''}
+    </div>
+  </div>
+  <div class="main">
+    ${data.summary ? `<div class="section full-width"><div class="section-title">README.md</div><div class="content">${data.summary}</div></div>` : ''}
+    <div class="grid">
+      ${data.experience ? `<div class="section"><div class="section-title">Experience</div><div class="content">${data.experience}</div></div>` : ''}
+      ${data.education ? `<div class="section"><div class="section-title">Education</div><div class="content">${data.education}</div></div>` : ''}
+      ${data.skills ? `<div class="section"><div class="section-title">Tech Stack</div><div class="content">${data.skills}</div></div>` : ''}
+      ${data.projects ? `<div class="section"><div class="section-title">Projects</div><div class="content">${data.projects}</div></div>` : ''}
+    </div>
+    ${data.certifications ? `<div class="section full-width"><div class="section-title">Certifications</div><div class="content">${data.certifications}</div></div>` : ''}
+  </div>
+</body>
+</html>`;
+
+// Template 5: Executive Elite - Premium Gold Accent
+const getExecutiveEliteHTML = (data: FormData) => `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>${data.fullName || 'Resume'}</title>
+  <style>
+    @page { margin: 0; size: A4; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Palatino Linotype', 'Book Antiqua', serif; line-height: 1.7; color: #1c1917; background: white; }
+    .sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: 10px; background: linear-gradient(180deg, #f59e0b, #ea580c); }
+    .container { margin-left: 40px; padding: 50px 50px 50px 20px; }
+    .header { border-bottom: 2px solid #f59e0b; padding-bottom: 25px; margin-bottom: 30px; }
+    .name { font-size: 42px; font-weight: bold; color: #78350f; margin-bottom: 8px; letter-spacing: 1px; }
+    .title { font-size: 18px; color: #92400e; font-style: italic; margin-bottom: 15px; }
+    .contact { font-size: 12px; color: #78716c; display: flex; flex-wrap: wrap; gap: 20px; }
+    .section { margin-bottom: 28px; }
+    .section-title { font-size: 14px; font-weight: bold; color: #b45309; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #fcd34d; display: flex; align-items: center; gap: 10px; }
+    .section-title::before { content: '◆'; color: #f59e0b; font-size: 10px; }
+    .content { font-size: 12px; white-space: pre-line; color: #44403c; }
+    .highlight { background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%); padding: 20px; border-radius: 8px; margin-bottom: 25px; border-left: 4px solid #f59e0b; }
+    @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } .sidebar { position: absolute; } }
+  </style>
+</head>
+<body>
+  <div class="sidebar"></div>
+  <div class="container">
+    <div class="header">
+      <div class="name">${data.fullName || 'Your Name'}</div>
+      <div class="title">${data.summary ? data.summary.split('.')[0] : 'Executive Professional'}</div>
+      <div class="contact">
+        <span>✉ ${data.email || 'email@example.com'}</span>
+        <span>📞 ${data.phone || '+91 XXXXX'}</span>
+        <span>📍 ${data.location || 'City'}</span>
+        ${data.linkedin ? `<span>🔗 ${data.linkedin}</span>` : ''}
+      </div>
+    </div>
+    ${data.summary ? `<div class="highlight"><div class="content" style="font-style:italic;">"${data.summary}"</div></div>` : ''}
+    ${data.experience ? `<div class="section"><div class="section-title">Executive Experience</div><div class="content">${data.experience}</div></div>` : ''}
+    ${data.education ? `<div class="section"><div class="section-title">Academic Background</div><div class="content">${data.education}</div></div>` : ''}
+    ${data.skills ? `<div class="section"><div class="section-title">Core Competencies</div><div class="content">${data.skills}</div></div>` : ''}
+    ${data.projects ? `<div class="section"><div class="section-title">Key Achievements</div><div class="content">${data.projects}</div></div>` : ''}
+    ${data.certifications ? `<div class="section"><div class="section-title">Credentials</div><div class="content">${data.certifications}</div></div>` : ''}
+  </div>
+</body>
+</html>`;
+
+// Template 6: Senior Tech Lead - Modern Purple Gradient
+const getSeniorTechLeadHTML = (data: FormData) => `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>${data.fullName || 'Resume'}</title>
+  <style>
+    @page { margin: 0; size: A4; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, sans-serif; line-height: 1.6; color: #1e1b4b; background: white; }
+    .header { background: linear-gradient(135deg, #4f46e5, #7c3aed); padding: 45px; position: relative; overflow: hidden; }
+    .header::after { content: ''; position: absolute; right: -50px; top: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%; }
+    .name { font-size: 36px; font-weight: 600; color: white; margin-bottom: 5px; position: relative; z-index: 1; }
+    .role { color: rgba(255,255,255,0.9); font-size: 16px; margin-bottom: 20px; }
+    .contact { display: flex; flex-wrap: wrap; gap: 20px; font-size: 12px; color: rgba(255,255,255,0.9); }
+    .main { padding: 40px; }
+    .two-col { display: flex; gap: 40px; }
+    .col-main { flex: 2; }
+    .col-side { flex: 1; }
+    .section { margin-bottom: 25px; }
+    .section-title { font-size: 12px; font-weight: 700; color: #4f46e5; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+    .section-title::before { content: ''; width: 25px; height: 3px; background: linear-gradient(90deg, #4f46e5, #7c3aed); }
+    .content { font-size: 12px; white-space: pre-line; color: #3730a3; }
+    .skill-box { background: #eef2ff; padding: 15px; border-radius: 10px; margin-bottom: 15px; }
+    .skill-title { font-size: 11px; color: #4f46e5; font-weight: 600; margin-bottom: 8px; }
+    .skill-content { font-size: 11px; color: #6366f1; white-space: pre-line; }
+    @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="name">${data.fullName || 'Your Name'}</div>
+    <div class="role">${data.summary ? data.summary.split('.')[0] : 'Senior Tech Lead'}</div>
+    <div class="contact">
+      <span>📧 ${data.email || 'email@example.com'}</span>
+      <span>📱 ${data.phone || '+91 XXXXX'}</span>
+      <span>📍 ${data.location || 'City'}</span>
+      ${data.linkedin ? `<span>💼 ${data.linkedin}</span>` : ''}
+      ${data.portfolio ? `<span>🔗 ${data.portfolio}</span>` : ''}
+    </div>
+  </div>
+  <div class="main">
+    <div class="two-col">
+      <div class="col-main">
+        ${data.summary ? `<div class="section"><div class="section-title">Summary</div><div class="content">${data.summary}</div></div>` : ''}
+        ${data.experience ? `<div class="section"><div class="section-title">Experience</div><div class="content">${data.experience}</div></div>` : ''}
+        ${data.projects ? `<div class="section"><div class="section-title">Key Projects</div><div class="content">${data.projects}</div></div>` : ''}
+      </div>
+      <div class="col-side">
+        ${data.skills ? `<div class="skill-box"><div class="skill-title">TECHNICAL SKILLS</div><div class="skill-content">${data.skills}</div></div>` : ''}
+        ${data.education ? `<div class="skill-box"><div class="skill-title">EDUCATION</div><div class="skill-content">${data.education}</div></div>` : ''}
+        ${data.certifications ? `<div class="skill-box"><div class="skill-title">CERTIFICATIONS</div><div class="skill-content">${data.certifications}</div></div>` : ''}
+      </div>
+    </div>
+  </div>
+</body>
+</html>`;
+
+// Template 7: Creative Designer - Colorful Portfolio Style
+const getCreativeDesignerHTML = (data: FormData) => `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>${data.fullName || 'Resume'}</title>
+  <style>
+    @page { margin: 0; size: A4; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Poppins', 'Segoe UI', sans-serif; line-height: 1.7; color: #1f2937; background: linear-gradient(180deg, #fdf2f8 0%, #fce7f3 50%, #fbcfe8 100%); min-height: 100vh; }
+    .header { background: linear-gradient(135deg, #ec4899, #f43f5e); padding: 50px; clip-path: polygon(0 0, 100% 0, 100% 80%, 0 100%); text-align: center; }
+    .avatar { width: 80px; height: 80px; background: white; border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: bold; color: #ec4899; }
+    .name { font-size: 38px; font-weight: 700; color: white; margin-bottom: 5px; }
+    .tagline { color: rgba(255,255,255,0.9); font-size: 16px; margin-bottom: 20px; }
+    .contact { display: flex; justify-content: center; flex-wrap: wrap; gap: 20px; font-size: 12px; color: white; }
+    .main { padding: 20px 50px 50px; margin-top: -30px; }
+    .card-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 40px rgba(236,72,153,0.15); }
+    .card.full { grid-column: 1 / -1; }
+    .card-title { font-size: 13px; font-weight: 700; color: #db2777; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+    .card-title::before { content: '✦'; }
+    .card-content { font-size: 12px; white-space: pre-line; color: #6b7280; }
+    @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="avatar">${(data.fullName || 'U')[0]}</div>
+    <div class="name">${data.fullName || 'Creative Designer'}</div>
+    <div class="tagline">${data.summary ? data.summary.split('.')[0] : 'Creative Professional'}</div>
+    <div class="contact">
+      <span>✉ ${data.email || 'email@example.com'}</span>
+      <span>📞 ${data.phone || '+91 XXXXX'}</span>
+      <span>📍 ${data.location || 'City'}</span>
+      ${data.portfolio ? `<span>🎨 ${data.portfolio}</span>` : ''}
+    </div>
+  </div>
+  <div class="main">
+    <div class="card-grid">
+      ${data.summary ? `<div class="card full"><div class="card-title">About Me</div><div class="card-content">${data.summary}</div></div>` : ''}
+      ${data.experience ? `<div class="card"><div class="card-title">Experience</div><div class="card-content">${data.experience}</div></div>` : ''}
+      ${data.projects ? `<div class="card"><div class="card-title">Portfolio</div><div class="card-content">${data.projects}</div></div>` : ''}
+      ${data.skills ? `<div class="card"><div class="card-title">Skills</div><div class="card-content">${data.skills}</div></div>` : ''}
+      ${data.education ? `<div class="card"><div class="card-title">Education</div><div class="card-content">${data.education}</div></div>` : ''}
+      ${data.certifications ? `<div class="card full"><div class="card-title">Certifications & Awards</div><div class="card-content">${data.certifications}</div></div>` : ''}
+    </div>
+  </div>
+</body>
+</html>`;
+
+// Template 8: Academic Scholar - Traditional CV Format
+const getAcademicScholarHTML = (data: FormData) => `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>${data.fullName || 'Resume'}</title>
+  <style>
+    @page { margin: 0; size: A4; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Times New Roman', Times, serif; line-height: 1.8; color: #1e3a5f; padding: 60px; background: white; }
+    .header { text-align: center; margin-bottom: 40px; padding-bottom: 25px; border-bottom: 3px double #0d9488; }
+    .name { font-size: 32px; font-weight: bold; color: #134e4a; margin-bottom: 5px; font-variant: small-caps; letter-spacing: 3px; }
+    .degree { font-size: 16px; color: #0d9488; font-style: italic; margin-bottom: 15px; }
+    .contact { font-size: 12px; color: #5f7782; }
+    .contact span { margin: 0 10px; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 14px; font-weight: bold; color: #115e59; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #99f6e4; }
+    .content { font-size: 12px; white-space: pre-line; color: #334155; text-align: justify; }
+    .publications { border-left: 3px solid #0d9488; padding-left: 15px; margin-left: 10px; }
+    .note { font-size: 11px; color: #64748b; font-style: italic; margin-top: 30px; text-align: center; padding-top: 20px; border-top: 1px solid #e2e8f0; }
+    @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="name">${data.fullName || 'Your Name'}</div>
+    <div class="degree">${data.summary ? data.summary.split('.')[0] : 'Academic Professional'}</div>
+    <div class="contact">
+      <span>✉ ${data.email || 'email@example.com'}</span>
+      <span>|</span>
+      <span>📞 ${data.phone || '+91 XXXXX'}</span>
+      <span>|</span>
+      <span>📍 ${data.location || 'City'}</span>
+      ${data.linkedin ? `<span>|</span><span>🔗 ${data.linkedin}</span>` : ''}
+    </div>
+  </div>
+  ${data.summary ? `<div class="section"><div class="section-title">Research Interests</div><div class="content">${data.summary}</div></div>` : ''}
+  ${data.education ? `<div class="section"><div class="section-title">Academic Qualifications</div><div class="content publications">${data.education}</div></div>` : ''}
+  ${data.experience ? `<div class="section"><div class="section-title">Academic & Research Experience</div><div class="content">${data.experience}</div></div>` : ''}
+  ${data.projects ? `<div class="section"><div class="section-title">Publications & Research</div><div class="content publications">${data.projects}</div></div>` : ''}
+  ${data.skills ? `<div class="section"><div class="section-title">Technical Expertise</div><div class="content">${data.skills}</div></div>` : ''}
+  ${data.certifications ? `<div class="section"><div class="section-title">Grants, Awards & Honors</div><div class="content">${data.certifications}</div></div>` : ''}
+  <div class="note">Curriculum Vitae • ${data.fullName || 'Candidate'}</div>
+</body>
+</html>`;
 
 const ResumeBuilder = () => {
   const [selectedTemplate, setSelectedTemplate] = useState<ResumeTemplate | null>(null);
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [step, setStep] = useState<'browse' | 'fill' | 'preview'>('browse');
   const [formData, setFormData] = useState(initialFormData);
-
-  const stepsList = [
-    { key: 'browse' as const, label: 'Choose Template', num: 1 },
-    { key: 'fill' as const, label: 'Fill Details', num: 2 },
-    { key: 'preview' as const, label: 'Download', num: 3 }
-  ];
 
   const categories = [
     { id: 'all', name: 'All Templates', icon: FileText },
@@ -263,97 +556,31 @@ const ResumeBuilder = () => {
     setStep('browse');
   };
 
+  const getTemplateHTML = (templateId: string, data: FormData): string => {
+    const templateMap: Record<string, (data: FormData) => string> = {
+      'clean-starter': getCleanStarterHTML,
+      'modern-minimal': getModernMinimalHTML,
+      'professional-classic': getProfessionalClassicHTML,
+      'tech-pro': getTechProHTML,
+      'executive-elite': getExecutiveEliteHTML,
+      'senior-tech-lead': getSeniorTechLeadHTML,
+      'creative-designer': getCreativeDesignerHTML,
+      'academic-scholar': getAcademicScholarHTML
+    };
+    return (templateMap[templateId] || getCleanStarterHTML)(data);
+  };
+
   const generatePDF = () => {
     if (!selectedTemplate) return;
 
-    const templateStyles = getTemplateStyles(selectedTemplate.id);
-    const needsMainContent = ['tech-pro', 'executive-elite', 'senior-tech-lead', 'creative-designer'].includes(selectedTemplate.id);
-    const hasSidebar = selectedTemplate.id === 'executive-elite';
-
-    const resumeContent = `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <meta charset="UTF-8">
-          <title>${formData.fullName || 'Resume'}</title>
-          <style>
-            ${templateStyles}
-            @media print {
-              body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            }
-          </style>
-        </head>
-        <body>
-          ${hasSidebar ? '<div class="sidebar"></div>' : ''}
-          <div class="header">
-            <div class="name">${formData.fullName || 'Your Name'}</div>
-            <div class="contact">
-              <span>${formData.email || 'email@example.com'}</span>
-              <span>${formData.phone || '+91 XXXXX XXXXX'}</span>
-              <span>${formData.location || 'City, Country'}</span>
-              ${formData.linkedin ? `<span>${formData.linkedin}</span>` : ''}
-              ${formData.portfolio ? `<span>${formData.portfolio}</span>` : ''}
-            </div>
-          </div>
-          
-          ${needsMainContent ? '<div class="main-content">' : ''}
-          
-          ${formData.summary ? `
-            <div class="section">
-              <div class="section-title">Professional Summary</div>
-              <div class="content">${formData.summary}</div>
-            </div>
-          ` : ''}
-          
-          ${formData.experience ? `
-            <div class="section">
-              <div class="section-title">Work Experience</div>
-              <div class="content">${formData.experience}</div>
-            </div>
-          ` : ''}
-          
-          ${formData.education ? `
-            <div class="section">
-              <div class="section-title">Education</div>
-              <div class="content">${formData.education}</div>
-            </div>
-          ` : ''}
-          
-          ${formData.skills ? `
-            <div class="section">
-              <div class="section-title">Skills</div>
-              <div class="content">${formData.skills}</div>
-            </div>
-          ` : ''}
-          
-          ${formData.projects ? `
-            <div class="section">
-              <div class="section-title">Projects</div>
-              <div class="content">${formData.projects}</div>
-            </div>
-          ` : ''}
-          
-          ${formData.certifications ? `
-            <div class="section">
-              <div class="section-title">Certifications</div>
-              <div class="content">${formData.certifications}</div>
-            </div>
-          ` : ''}
-          
-          ${needsMainContent ? '</div>' : ''}
-        </body>
-      </html>
-    `;
-
+    const resumeHTML = getTemplateHTML(selectedTemplate.id, formData);
     const printWindow = window.open('', '_blank');
     if (printWindow) {
-      printWindow.document.write(resumeContent);
+      printWindow.document.write(resumeHTML);
       printWindow.document.close();
       
-      // Wait for content to load, then print and close
       setTimeout(() => {
         printWindow.print();
-        // Reset form after printing
         setTimeout(() => {
           resetForm();
         }, 500);
@@ -361,61 +588,11 @@ const ResumeBuilder = () => {
     }
   };
 
-  const getPreviewStyles = (templateId: string): React.CSSProperties => {
-    const previewStyles: Record<string, React.CSSProperties> = {
-      'clean-starter': { fontFamily: 'Georgia, serif', background: 'white' },
-      'modern-minimal': { fontFamily: 'Helvetica, Arial, sans-serif', background: 'white' },
-      'professional-classic': { fontFamily: 'Times New Roman, serif', background: 'white' },
-      'tech-pro': { fontFamily: 'Consolas, Monaco, monospace', background: '#0f172a', color: '#e2e8f0' },
-      'executive-elite': { fontFamily: 'Palatino Linotype, serif', background: 'white' },
-      'senior-tech-lead': { fontFamily: 'Segoe UI, sans-serif', background: 'white' },
-      'creative-designer': { fontFamily: 'Quicksand, sans-serif', background: 'linear-gradient(135deg, #fdf2f8, #fce7f3)' },
-      'academic-scholar': { fontFamily: 'Cambria, Georgia, serif', background: 'white' }
-    };
-    return previewStyles[templateId] || previewStyles['clean-starter'];
-  };
-
-  const getHeaderStyles = (templateId: string): React.CSSProperties => {
-    const headerStyles: Record<string, React.CSSProperties> = {
-      'clean-starter': { textAlign: 'center', borderBottom: '3px solid #3b82f6', paddingBottom: '24px', marginBottom: '24px' },
-      'modern-minimal': { borderBottom: '1px solid #e5e5e5', paddingBottom: '16px', marginBottom: '24px' },
-      'professional-classic': { textAlign: 'center', background: 'linear-gradient(135deg, #059669, #0d9488)', padding: '24px', color: 'white', margin: '-32px -32px 24px -32px' },
-      'tech-pro': { background: 'linear-gradient(135deg, #7c3aed, #db2777)', padding: '24px', margin: '-32px -32px 24px -32px' },
-      'executive-elite': { borderBottom: '2px solid #f59e0b', paddingBottom: '24px', marginBottom: '24px', paddingLeft: '12px', borderLeft: '6px solid #f59e0b' },
-      'senior-tech-lead': { background: 'linear-gradient(135deg, #4f46e5, #7c3aed)', padding: '24px', margin: '-32px -32px 24px -32px' },
-      'creative-designer': { background: 'linear-gradient(135deg, #ec4899, #f43f5e)', padding: '28px', clipPath: 'polygon(0 0, 100% 0, 100% 85%, 0 100%)', margin: '-32px -32px 16px -32px' },
-      'academic-scholar': { borderBottom: '3px double #0d9488', paddingBottom: '20px', marginBottom: '24px' }
-    };
-    return headerStyles[templateId] || headerStyles['clean-starter'];
-  };
-
-  const getNameColor = (templateId: string): string => {
-    const colors: Record<string, string> = {
-      'clean-starter': '#1e40af',
-      'modern-minimal': '#000',
-      'professional-classic': 'white',
-      'tech-pro': 'white',
-      'executive-elite': '#92400e',
-      'senior-tech-lead': 'white',
-      'creative-designer': 'white',
-      'academic-scholar': '#134e4a'
-    };
-    return colors[templateId] || '#1e40af';
-  };
-
-  const getSectionTitleColor = (templateId: string): string => {
-    const colors: Record<string, string> = {
-      'clean-starter': '#1e40af',
-      'modern-minimal': '#000',
-      'professional-classic': '#047857',
-      'tech-pro': '#a78bfa',
-      'executive-elite': '#b45309',
-      'senior-tech-lead': '#4f46e5',
-      'creative-designer': '#db2777',
-      'academic-scholar': '#115e59'
-    };
-    return colors[templateId] || '#1e40af';
-  };
+  const stepsList = [
+    { key: 'browse' as const, label: 'Choose Template', num: 1 },
+    { key: 'fill' as const, label: 'Fill Details', num: 2 },
+    { key: 'preview' as const, label: 'Download', num: 3 }
+  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -439,8 +616,7 @@ const ResumeBuilder = () => {
             </h1>
             
             <p className="text-lg text-muted-foreground">
-              Choose from professional templates designed for freshers to executives. 
-              Build your resume in minutes and download in HD PDF format.
+              Choose from 8 unique professional templates - each with a completely different design.
             </p>
           </div>
         </div>
@@ -502,21 +678,15 @@ const ResumeBuilder = () => {
                     className="group cursor-pointer border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-glow-sm overflow-hidden"
                     onClick={() => handleSelectTemplate(template)}
                   >
-                    {/* Preview Header */}
                     <div className={`h-32 bg-gradient-to-br ${template.previewColor} relative overflow-hidden`}>
                       <div className="absolute inset-0 bg-black/20" />
                       <div className="absolute inset-4 bg-white/90 rounded-lg p-3">
                         <div className="h-2 w-20 bg-gray-300 rounded mb-2" />
                         <div className="h-1.5 w-32 bg-gray-200 rounded mb-1" />
                         <div className="h-1.5 w-24 bg-gray-200 rounded" />
-                        <div className="mt-3 flex gap-2">
-                          <div className="h-1 w-8 bg-gray-200 rounded" />
-                          <div className="h-1 w-8 bg-gray-200 rounded" />
-                          <div className="h-1 w-8 bg-gray-200 rounded" />
-                        </div>
                       </div>
                       <div className="absolute top-2 right-2">
-                        <span className={`text-xs font-semibold px-2 py-1 rounded-full bg-white/20 backdrop-blur-sm text-white capitalize`}>
+                        <span className="text-xs font-semibold px-2 py-1 rounded-full bg-white/20 backdrop-blur-sm text-white capitalize">
                           {template.category}
                         </span>
                       </div>
@@ -566,7 +736,6 @@ const ResumeBuilder = () => {
               </div>
 
               <div className="space-y-8">
-                {/* Personal Information */}
                 <Card className="border-border/50">
                   <CardHeader>
                     <CardTitle className="text-lg">Personal Information</CardTitle>
@@ -574,181 +743,87 @@ const ResumeBuilder = () => {
                   <CardContent className="grid md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="fullName">Full Name *</Label>
-                      <Input 
-                        id="fullName" 
-                        placeholder="John Doe"
-                        value={formData.fullName}
-                        onChange={(e) => handleInputChange('fullName', e.target.value)}
-                      />
+                      <Input id="fullName" placeholder="John Doe" value={formData.fullName} onChange={(e) => handleInputChange('fullName', e.target.value)} />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="email">Email *</Label>
-                      <Input 
-                        id="email" 
-                        type="email"
-                        placeholder="john@example.com"
-                        value={formData.email}
-                        onChange={(e) => handleInputChange('email', e.target.value)}
-                      />
+                      <Input id="email" type="email" placeholder="john@example.com" value={formData.email} onChange={(e) => handleInputChange('email', e.target.value)} />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="phone">Phone *</Label>
-                      <Input 
-                        id="phone" 
-                        placeholder="+91 98765 43210"
-                        value={formData.phone}
-                        onChange={(e) => handleInputChange('phone', e.target.value)}
-                      />
+                      <Input id="phone" placeholder="+91 98765 43210" value={formData.phone} onChange={(e) => handleInputChange('phone', e.target.value)} />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="location">Location</Label>
-                      <Input 
-                        id="location" 
-                        placeholder="Mumbai, India"
-                        value={formData.location}
-                        onChange={(e) => handleInputChange('location', e.target.value)}
-                      />
+                      <Input id="location" placeholder="Mumbai, India" value={formData.location} onChange={(e) => handleInputChange('location', e.target.value)} />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="linkedin">LinkedIn URL</Label>
-                      <Input 
-                        id="linkedin" 
-                        placeholder="linkedin.com/in/johndoe"
-                        value={formData.linkedin}
-                        onChange={(e) => handleInputChange('linkedin', e.target.value)}
-                      />
+                      <Input id="linkedin" placeholder="linkedin.com/in/johndoe" value={formData.linkedin} onChange={(e) => handleInputChange('linkedin', e.target.value)} />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="portfolio">Portfolio/Website</Label>
-                      <Input 
-                        id="portfolio" 
-                        placeholder="johndoe.com"
-                        value={formData.portfolio}
-                        onChange={(e) => handleInputChange('portfolio', e.target.value)}
-                      />
+                      <Input id="portfolio" placeholder="johndoe.com" value={formData.portfolio} onChange={(e) => handleInputChange('portfolio', e.target.value)} />
                     </div>
                   </CardContent>
                 </Card>
 
-                {/* Professional Summary */}
                 <Card className="border-border/50">
                   <CardHeader>
                     <CardTitle className="text-lg">Professional Summary</CardTitle>
-                    <CardDescription>Write 2-3 sentences about your professional background</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <Textarea 
-                      placeholder="Results-driven software developer with 2+ years of experience in building scalable web applications..."
-                      className="min-h-[100px]"
-                      value={formData.summary}
-                      onChange={(e) => handleInputChange('summary', e.target.value)}
-                    />
+                    <Textarea placeholder="Results-driven software developer with 2+ years of experience..." className="min-h-[100px]" value={formData.summary} onChange={(e) => handleInputChange('summary', e.target.value)} />
                   </CardContent>
                 </Card>
 
-                {/* Work Experience */}
                 <Card className="border-border/50">
                   <CardHeader>
                     <CardTitle className="text-lg">Work Experience</CardTitle>
-                    <CardDescription>List your work experience (most recent first)</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <Textarea 
-                      placeholder="Software Developer | ABC Company | 2023 - Present
-• Developed and maintained web applications using React and Node.js
-• Improved application performance by 40%
-
-Junior Developer | XYZ Corp | 2021 - 2023
-• Assisted in developing mobile applications
-• Collaborated with cross-functional teams"
-                      className="min-h-[200px]"
-                      value={formData.experience}
-                      onChange={(e) => handleInputChange('experience', e.target.value)}
-                    />
+                    <Textarea placeholder="Software Developer | ABC Company | 2023 - Present&#10;• Developed web applications using React" className="min-h-[200px]" value={formData.experience} onChange={(e) => handleInputChange('experience', e.target.value)} />
                   </CardContent>
                 </Card>
 
-                {/* Education */}
                 <Card className="border-border/50">
                   <CardHeader>
                     <CardTitle className="text-lg">Education</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <Textarea 
-                      placeholder="Bachelor of Technology in Computer Science
-XYZ University | 2017 - 2021 | CGPA: 8.5/10
-
-Higher Secondary (XII)
-ABC School | 2017 | 92%"
-                      className="min-h-[120px]"
-                      value={formData.education}
-                      onChange={(e) => handleInputChange('education', e.target.value)}
-                    />
+                    <Textarea placeholder="Bachelor of Technology in Computer Science&#10;XYZ University | 2017 - 2021" className="min-h-[120px]" value={formData.education} onChange={(e) => handleInputChange('education', e.target.value)} />
                   </CardContent>
                 </Card>
 
-                {/* Skills */}
                 <Card className="border-border/50">
                   <CardHeader>
                     <CardTitle className="text-lg">Skills</CardTitle>
-                    <CardDescription>List your technical and soft skills</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <Textarea 
-                      placeholder="Technical Skills: JavaScript, TypeScript, React, Node.js, Python, SQL, Git, AWS
-
-Soft Skills: Problem Solving, Team Collaboration, Communication, Leadership"
-                      className="min-h-[100px]"
-                      value={formData.skills}
-                      onChange={(e) => handleInputChange('skills', e.target.value)}
-                    />
+                    <Textarea placeholder="JavaScript, React, Node.js, Python, SQL, Git, AWS" className="min-h-[100px]" value={formData.skills} onChange={(e) => handleInputChange('skills', e.target.value)} />
                   </CardContent>
                 </Card>
 
-                {/* Projects */}
                 <Card className="border-border/50">
                   <CardHeader>
                     <CardTitle className="text-lg">Projects</CardTitle>
-                    <CardDescription>Highlight your key projects</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <Textarea 
-                      placeholder="E-Commerce Platform | React, Node.js, MongoDB
-• Built a full-stack e-commerce platform with 10K+ users
-• Implemented secure payment integration
-
-AI Chatbot | Python, TensorFlow
-• Developed an AI-powered customer support chatbot
-• Achieved 85% accuracy in intent recognition"
-                      className="min-h-[150px]"
-                      value={formData.projects}
-                      onChange={(e) => handleInputChange('projects', e.target.value)}
-                    />
+                    <Textarea placeholder="E-Commerce Platform | React, Node.js&#10;• Built a full-stack platform" className="min-h-[150px]" value={formData.projects} onChange={(e) => handleInputChange('projects', e.target.value)} />
                   </CardContent>
                 </Card>
 
-                {/* Certifications */}
                 <Card className="border-border/50">
                   <CardHeader>
                     <CardTitle className="text-lg">Certifications</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <Textarea 
-                      placeholder="AWS Certified Solutions Architect | Amazon Web Services | 2023
-Google Cloud Professional Data Engineer | Google | 2022
-Meta Frontend Developer Certificate | Meta | 2021"
-                      className="min-h-[100px]"
-                      value={formData.certifications}
-                      onChange={(e) => handleInputChange('certifications', e.target.value)}
-                    />
+                    <Textarea placeholder="AWS Certified Solutions Architect | 2023" className="min-h-[100px]" value={formData.certifications} onChange={(e) => handleInputChange('certifications', e.target.value)} />
                   </CardContent>
                 </Card>
 
-                {/* Action Buttons */}
                 <div className="flex justify-end gap-4">
-                  <Button variant="outline" onClick={() => setStep('browse')}>
-                    Back
-                  </Button>
+                  <Button variant="outline" onClick={() => setStep('browse')}>Back</Button>
                   <Button onClick={() => setStep('preview')} className="bg-primary">
                     Preview & Download
                     <ChevronRight className="h-4 w-4 ml-1" />
@@ -766,12 +841,10 @@ Meta Frontend Developer Certificate | Meta | 2021"
                   <p className="text-muted-foreground">Template: {selectedTemplate.name}</p>
                 </div>
                 <div className="flex gap-3">
-                  <Button variant="outline" onClick={() => setStep('fill')}>
-                    Edit Details
-                  </Button>
+                  <Button variant="outline" onClick={() => setStep('fill')}>Edit</Button>
                   <Button variant="outline" onClick={resetForm}>
                     <RotateCcw className="h-4 w-4 mr-2" />
-                    Start New
+                    New
                   </Button>
                   <Button onClick={generatePDF} className="bg-primary">
                     <Download className="h-4 w-4 mr-2" />
@@ -780,112 +853,17 @@ Meta Frontend Developer Certificate | Meta | 2021"
                 </div>
               </div>
 
-              {/* Resume Preview - Template Specific */}
               <Card className="border-border/50 overflow-hidden">
                 <div 
-                  className="p-8 text-gray-900 min-h-[600px]"
-                  style={getPreviewStyles(selectedTemplate.id)}
-                >
-                  {/* Header */}
-                  <div style={getHeaderStyles(selectedTemplate.id)}>
-                    <h1 
-                      className="text-3xl font-bold mb-2"
-                      style={{ color: getNameColor(selectedTemplate.id) }}
-                    >
-                      {formData.fullName || 'Your Name'}
-                    </h1>
-                    <p className={selectedTemplate.id === 'tech-pro' || selectedTemplate.id === 'professional-classic' || selectedTemplate.id === 'senior-tech-lead' || selectedTemplate.id === 'creative-designer' ? 'text-white/90 text-sm' : 'text-gray-600 text-sm'}>
-                      {formData.email || 'email@example.com'} | {formData.phone || '+91 XXXXX XXXXX'} | {formData.location || 'City, Country'}
-                    </p>
-                    {(formData.linkedin || formData.portfolio) && (
-                      <p className={selectedTemplate.id === 'tech-pro' || selectedTemplate.id === 'professional-classic' || selectedTemplate.id === 'senior-tech-lead' || selectedTemplate.id === 'creative-designer' ? 'text-white/80 text-xs mt-1' : 'text-gray-500 text-xs mt-1'}>
-                        {formData.linkedin && <span>LinkedIn: {formData.linkedin}</span>}
-                        {formData.linkedin && formData.portfolio && ' | '}
-                        {formData.portfolio && <span>Portfolio: {formData.portfolio}</span>}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Sections */}
-                  <div className={selectedTemplate.id === 'creative-designer' ? 'space-y-4' : ''}>
-                    {formData.summary && (
-                      <div className={`mb-5 ${selectedTemplate.id === 'tech-pro' ? 'bg-slate-800 p-4 rounded-lg border-l-2 border-purple-500' : ''} ${selectedTemplate.id === 'creative-designer' ? 'bg-white p-4 rounded-xl shadow-sm' : ''}`}>
-                        <h2 
-                          className="text-base font-bold border-b border-gray-200 pb-1 mb-2 uppercase tracking-wide"
-                          style={{ color: getSectionTitleColor(selectedTemplate.id), borderColor: selectedTemplate.id === 'tech-pro' ? 'transparent' : undefined }}
-                        >
-                          Professional Summary
-                        </h2>
-                        <p className={`text-sm whitespace-pre-line ${selectedTemplate.id === 'tech-pro' ? 'text-slate-300' : ''}`}>{formData.summary}</p>
-                      </div>
-                    )}
-
-                    {formData.experience && (
-                      <div className={`mb-5 ${selectedTemplate.id === 'tech-pro' ? 'bg-slate-800 p-4 rounded-lg border-l-2 border-purple-500' : ''} ${selectedTemplate.id === 'creative-designer' ? 'bg-white p-4 rounded-xl shadow-sm' : ''}`}>
-                        <h2 
-                          className="text-base font-bold border-b border-gray-200 pb-1 mb-2 uppercase tracking-wide"
-                          style={{ color: getSectionTitleColor(selectedTemplate.id), borderColor: selectedTemplate.id === 'tech-pro' ? 'transparent' : undefined }}
-                        >
-                          Work Experience
-                        </h2>
-                        <p className={`text-sm whitespace-pre-line ${selectedTemplate.id === 'tech-pro' ? 'text-slate-300' : ''}`}>{formData.experience}</p>
-                      </div>
-                    )}
-
-                    {formData.education && (
-                      <div className={`mb-5 ${selectedTemplate.id === 'tech-pro' ? 'bg-slate-800 p-4 rounded-lg border-l-2 border-purple-500' : ''} ${selectedTemplate.id === 'creative-designer' ? 'bg-white p-4 rounded-xl shadow-sm' : ''}`}>
-                        <h2 
-                          className="text-base font-bold border-b border-gray-200 pb-1 mb-2 uppercase tracking-wide"
-                          style={{ color: getSectionTitleColor(selectedTemplate.id), borderColor: selectedTemplate.id === 'tech-pro' ? 'transparent' : undefined }}
-                        >
-                          Education
-                        </h2>
-                        <p className={`text-sm whitespace-pre-line ${selectedTemplate.id === 'tech-pro' ? 'text-slate-300' : ''}`}>{formData.education}</p>
-                      </div>
-                    )}
-
-                    {formData.skills && (
-                      <div className={`mb-5 ${selectedTemplate.id === 'tech-pro' ? 'bg-slate-800 p-4 rounded-lg border-l-2 border-purple-500' : ''} ${selectedTemplate.id === 'creative-designer' ? 'bg-white p-4 rounded-xl shadow-sm' : ''}`}>
-                        <h2 
-                          className="text-base font-bold border-b border-gray-200 pb-1 mb-2 uppercase tracking-wide"
-                          style={{ color: getSectionTitleColor(selectedTemplate.id), borderColor: selectedTemplate.id === 'tech-pro' ? 'transparent' : undefined }}
-                        >
-                          Skills
-                        </h2>
-                        <p className={`text-sm whitespace-pre-line ${selectedTemplate.id === 'tech-pro' ? 'text-slate-300' : ''}`}>{formData.skills}</p>
-                      </div>
-                    )}
-
-                    {formData.projects && (
-                      <div className={`mb-5 ${selectedTemplate.id === 'tech-pro' ? 'bg-slate-800 p-4 rounded-lg border-l-2 border-purple-500' : ''} ${selectedTemplate.id === 'creative-designer' ? 'bg-white p-4 rounded-xl shadow-sm' : ''}`}>
-                        <h2 
-                          className="text-base font-bold border-b border-gray-200 pb-1 mb-2 uppercase tracking-wide"
-                          style={{ color: getSectionTitleColor(selectedTemplate.id), borderColor: selectedTemplate.id === 'tech-pro' ? 'transparent' : undefined }}
-                        >
-                          Projects
-                        </h2>
-                        <p className={`text-sm whitespace-pre-line ${selectedTemplate.id === 'tech-pro' ? 'text-slate-300' : ''}`}>{formData.projects}</p>
-                      </div>
-                    )}
-
-                    {formData.certifications && (
-                      <div className={`mb-5 ${selectedTemplate.id === 'tech-pro' ? 'bg-slate-800 p-4 rounded-lg border-l-2 border-purple-500' : ''} ${selectedTemplate.id === 'creative-designer' ? 'bg-white p-4 rounded-xl shadow-sm' : ''}`}>
-                        <h2 
-                          className="text-base font-bold border-b border-gray-200 pb-1 mb-2 uppercase tracking-wide"
-                          style={{ color: getSectionTitleColor(selectedTemplate.id), borderColor: selectedTemplate.id === 'tech-pro' ? 'transparent' : undefined }}
-                        >
-                          Certifications
-                        </h2>
-                        <p className={`text-sm whitespace-pre-line ${selectedTemplate.id === 'tech-pro' ? 'text-slate-300' : ''}`}>{formData.certifications}</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
+                  className="resume-preview"
+                  dangerouslySetInnerHTML={{ __html: getTemplateHTML(selectedTemplate.id, formData) }}
+                  style={{ transform: 'scale(0.85)', transformOrigin: 'top center' }}
+                />
               </Card>
 
               <div className="mt-6 p-4 bg-card/50 rounded-lg border border-border/50">
                 <p className="text-sm text-muted-foreground text-center">
-                  💡 Tip: Click "Download PDF" and select "Save as PDF" in the print dialog for HD quality output.
+                  💡 Click "Download PDF" and select "Save as PDF" for HD quality output.
                 </p>
               </div>
             </div>
