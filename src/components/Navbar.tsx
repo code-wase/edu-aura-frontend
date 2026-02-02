@@ -17,7 +17,8 @@ import {
   Info,
   FileText,
   ScrollText,
-  Shield
+  Shield,
+  NotebookPen
 } from 'lucide-react';
 
 const Navbar = () => {
@@ -36,6 +37,7 @@ const Navbar = () => {
     { path: '/', label: 'Home', icon: Home },
     { path: '/courses', label: 'Courses', icon: BookOpen },
     { path: '/degrees', label: 'Degrees', icon: GraduationCap },
+    { path: '/notes-provider', label: 'Notes Provider', icon: NotebookPen },
     { path: '/careers', label: 'Careers', icon: Briefcase },
     { path: '/jobs', label: 'Jobs', icon: Search },
     { path: '/faculty', label: 'Faculty', icon: Users },
@@ -69,15 +71,15 @@ const Navbar = () => {
         <div className="flex items-center gap-3">
           {/* AI Button - Like Reference */}
           <button
-            className="flex items-center gap-2 px-4 py-2.5 bg-transparent text-primary rounded-xl border border-primary/60 hover:border-primary hover:shadow-glow-sm transition-all duration-300 group"
+            className="flex items-center gap-2 px-3 py-2.5 md:px-4 bg-transparent text-primary rounded-xl border border-primary/60 hover:border-primary hover:shadow-glow-sm transition-all duration-300 group"
             onClick={() => {
               const event = new CustomEvent('openEduBot');
               window.dispatchEvent(event);
             }}
           >
             <Sparkles className="h-4 w-4 group-hover:animate-spin" />
-            <span className="text-sm font-semibold">Try EduAura AI</span>
-            <Sparkles className="h-4 w-4 group-hover:animate-spin" />
+            <span className="text-sm font-semibold hidden md:inline">Try EduAura AI</span>
+            <Sparkles className="h-4 w-4 group-hover:animate-spin hidden md:block" />
           </button>
 
           {/* HAMBURGER MENU - Always visible */}

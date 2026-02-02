@@ -18,6 +18,7 @@ import Jobs from '../pages/Jobs';
 import TermsAndConditions from '../pages/TermsAndConditions';
 import PrivacyPolicy from '../pages/PrivacyPolicy';
 import ResumeBuilder from '../pages/ResumeBuilder';
+import NotesProvider from '../pages/NotesProvider';
 
 const AppRoutes = () => {
   return (
@@ -41,6 +42,7 @@ const AppRoutes = () => {
         <Route path='/terms' element={<TermsAndConditions />} />
         <Route path='/privacy' element={<PrivacyPolicy />} />
         <Route path='/resume-builder' element={<ResumeBuilder />} />
+        <Route path='/notes-provider' element={<NotesProvider />} />
       </Route>
     </Routes>
   );
