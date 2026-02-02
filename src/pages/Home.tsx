@@ -13,6 +13,10 @@ import {
   GraduationCap,
   Laptop,
   Megaphone,
+  ChevronLeft,
+  ChevronRight,
+  Play,
+  Pause,
 } from 'lucide-react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
@@ -20,7 +24,7 @@ import 'slick-carousel/slick/slick-theme.css';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import EduBot from '@/components/EduBot';
 import CourseMarquee from '@/components/CourseMarquee';
 import AdmissionModal from '@/components/AdmissionModal';
@@ -45,6 +49,8 @@ interface FeatureItem {
 
 interface CarouselItem {
   image: string;
+  title: string;
+  subtitle: string;
 }
 
 interface NoticeItem {
@@ -86,14 +92,70 @@ const Home: React.FC = () => {
   ];
 
   const carouselItems: CarouselItem[] = [
-    { image: itm1 },
-    { image: itm2 },
-    { image: itm3 },
-    { image: itm4 },
-    { image: itm5 },
-    { image: itm6 },
-    { image: itm7 },
+    { image: itm1, title: 'World-Class Campus', subtitle: 'State-of-the-art facilities for modern learning' },
+    { image: itm2, title: 'Expert Faculty', subtitle: 'Learn from industry professionals' },
+    { image: itm3, title: 'Innovation Hub', subtitle: 'Where ideas become reality' },
+    { image: itm4, title: 'Student Life', subtitle: 'Vibrant campus culture and activities' },
+    { image: itm5, title: 'Tech Labs', subtitle: 'Hands-on experience with latest technology' },
+    { image: itm6, title: 'Library Resources', subtitle: 'Extensive digital and physical collections' },
+    { image: itm7, title: 'Sports & Recreation', subtitle: 'Holistic development for students' },
   ];
+
+  // Carousel state
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [progress, setProgress] = useState(0);
+  const sliderRef = useRef<Slider | null>(null);
+  const progressInterval = useRef<NodeJS.Timeout | null>(null);
+  const autoPlayDuration = 5000;
+
+  // Auto-play progress bar
+  useEffect(() => {
+    if (isAutoPlaying) {
+      setProgress(0);
+      const startTime = Date.now();
+      progressInterval.current = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        const newProgress = Math.min((elapsed / autoPlayDuration) * 100, 100);
+        setProgress(newProgress);
+        if (newProgress >= 100) {
+          setProgress(0);
+        }
+      }, 50);
+    } else {
+      if (progressInterval.current) {
+        clearInterval(progressInterval.current);
+      }
+    }
+    return () => {
+      if (progressInterval.current) {
+        clearInterval(progressInterval.current);
+      }
+    };
+  }, [isAutoPlaying, currentSlide]);
+
+  const goToSlide = (index: number) => {
+    sliderRef.current?.slickGoTo(index);
+  };
+
+  const nextSlide = () => {
+    sliderRef.current?.slickNext();
+  };
+
+  const prevSlide = () => {
+    sliderRef.current?.slickPrev();
+  };
+
+  const toggleAutoPlay = () => {
+    setIsAutoPlaying(!isAutoPlaying);
+    if (sliderRef.current) {
+      if (isAutoPlaying) {
+        sliderRef.current.slickPause();
+      } else {
+        sliderRef.current.slickPlay();
+      }
+    }
+  };
 
   const notices: NoticeItem[] = [
     {
@@ -215,13 +277,18 @@ const Home: React.FC = () => {
     dots: false,
     arrows: false,
     infinite: true,
-    autoplay: true,
-    autoplaySpeed: 3000,
-    speed: 600,
+    autoplay: isAutoPlaying,
+    autoplaySpeed: autoPlayDuration,
+    speed: 800,
     slidesToShow: 1,
     slidesToScroll: 1,
-    pauseOnHover: false,
+    pauseOnHover: true,
     fade: true,
+    cssEase: 'cubic-bezier(0.7, 0, 0.3, 1)',
+    beforeChange: (_: number, next: number) => {
+      setCurrentSlide(next);
+      setProgress(0);
+    },
   };
 
   return (
@@ -275,32 +342,158 @@ const Home: React.FC = () => {
 
       {/* HERO / CAROUSEL */}
       <section className="relative pt-2 md:pt-4">
-        {/* Carousel Only - Full Height Images */}
-        <div className="relative">
-          <Slider {...carouselSettings}>
+        {/* Interactive Carousel */}
+        <div className="relative group">
+          {/* Main Slider */}
+          <Slider ref={sliderRef} {...carouselSettings}>
             {carouselItems.map((item, i) => (
               <div
                 key={i}
-                className="relative h-[50vh] sm:h-[55vh] md:h-[65vh] lg:h-[70vh]"
+                className="relative h-[55vh] sm:h-[60vh] md:h-[70vh] lg:h-[75vh] overflow-hidden"
               >
-                <img
-                  src={item.image}
-                  alt={`Slide ${i + 1}`}
-                  className="absolute inset-0 h-full w-full object-cover"
-                />
-                {/* Subtle gradient overlay for better visibility */}
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-60" />
+                {/* Ken Burns Effect Image */}
+                <div 
+                  className={`absolute inset-0 transition-transform duration-[8000ms] ease-out ${
+                    currentSlide === i ? 'scale-110' : 'scale-100'
+                  }`}
+                >
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                
+                {/* Gradient Overlays */}
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-r from-background/60 via-transparent to-transparent" />
+                
+                {/* Slide Content */}
+                <div className="absolute bottom-20 left-6 sm:left-12 md:left-20 z-10 max-w-lg">
+                  <div 
+                    className={`transform transition-all duration-700 ${
+                      currentSlide === i 
+                        ? 'translate-y-0 opacity-100' 
+                        : 'translate-y-10 opacity-0'
+                    }`}
+                  >
+                    <span className="inline-block px-3 py-1 text-xs font-semibold bg-primary/20 text-primary rounded-full mb-3 backdrop-blur-sm border border-primary/30">
+                      {String(i + 1).padStart(2, '0')} / {String(carouselItems.length).padStart(2, '0')}
+                    </span>
+                    <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-2 drop-shadow-lg">
+                      {item.title}
+                    </h2>
+                    <p className="text-sm sm:text-base md:text-lg text-muted-foreground/90 max-w-md drop-shadow">
+                      {item.subtitle}
+                    </p>
+                  </div>
+                </div>
               </div>
             ))}
           </Slider>
           
-          {/* Carousel Indicators */}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-            {carouselItems.map((_, i) => (
+          {/* Navigation Arrows */}
+          <button
+            onClick={prevSlide}
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-card/80 backdrop-blur-sm border border-border/50 shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-primary hover:text-primary-foreground hover:scale-110 hover:shadow-glow-md"
+            aria-label="Previous slide"
+          >
+            <ChevronLeft className="h-6 w-6" />
+          </button>
+          <button
+            onClick={nextSlide}
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-card/80 backdrop-blur-sm border border-border/50 shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-primary hover:text-primary-foreground hover:scale-110 hover:shadow-glow-md"
+            aria-label="Next slide"
+          >
+            <ChevronRight className="h-6 w-6" />
+          </button>
+          
+          {/* Bottom Controls Bar */}
+          <div className="absolute bottom-0 left-0 right-0 z-20">
+            {/* Progress Bar */}
+            <div className="h-1 bg-muted/30">
               <div 
-                key={i} 
-                className="w-2 h-2 rounded-full bg-foreground/30 hover:bg-primary transition-colors" 
+                className="h-full bg-gradient-to-r from-primary to-secondary transition-all duration-100 ease-linear"
+                style={{ width: `${progress}%` }}
               />
+            </div>
+            
+            {/* Controls Container */}
+            <div className="bg-gradient-to-t from-background/95 to-background/80 backdrop-blur-sm px-4 sm:px-8 py-4">
+              <div className="flex items-center justify-between max-w-7xl mx-auto">
+                {/* Play/Pause Button */}
+                <button
+                  onClick={toggleAutoPlay}
+                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-card/80 border border-border/50 hover:border-primary/50 transition-all hover:scale-105"
+                >
+                  {isAutoPlaying ? (
+                    <>
+                      <Pause className="h-4 w-4 text-primary" />
+                      <span className="text-sm text-muted-foreground hidden sm:inline">Pause</span>
+                    </>
+                  ) : (
+                    <>
+                      <Play className="h-4 w-4 text-primary" />
+                      <span className="text-sm text-muted-foreground hidden sm:inline">Play</span>
+                    </>
+                  )}
+                </button>
+                
+                {/* Dot Indicators */}
+                <div className="flex items-center gap-2">
+                  {carouselItems.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => goToSlide(i)}
+                      className={`relative overflow-hidden rounded-full transition-all duration-300 ${
+                        currentSlide === i 
+                          ? 'w-8 h-3 bg-primary' 
+                          : 'w-3 h-3 bg-muted-foreground/30 hover:bg-muted-foreground/50'
+                      }`}
+                      aria-label={`Go to slide ${i + 1}`}
+                    >
+                      {currentSlide === i && (
+                        <span className="absolute inset-0 bg-gradient-to-r from-primary to-secondary animate-pulse" />
+                      )}
+                    </button>
+                  ))}
+                </div>
+                
+                {/* Slide Counter */}
+                <div className="flex items-center gap-3 text-sm">
+                  <span className="text-2xl font-bold text-gradient">
+                    {String(currentSlide + 1).padStart(2, '0')}
+                  </span>
+                  <span className="text-muted-foreground">/</span>
+                  <span className="text-muted-foreground">
+                    {String(carouselItems.length).padStart(2, '0')}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Thumbnail Preview (shows on hover) */}
+          <div className="absolute bottom-24 right-4 z-20 hidden lg:flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
+            {carouselItems.map((item, i) => (
+              <button
+                key={i}
+                onClick={() => goToSlide(i)}
+                className={`relative w-16 h-12 rounded-lg overflow-hidden border-2 transition-all duration-300 hover:scale-110 ${
+                  currentSlide === i 
+                    ? 'border-primary shadow-glow-sm' 
+                    : 'border-border/50 opacity-60 hover:opacity-100'
+                }`}
+              >
+                <img
+                  src={item.image}
+                  alt={`Thumbnail ${i + 1}`}
+                  className="w-full h-full object-cover"
+                />
+                {currentSlide === i && (
+                  <div className="absolute inset-0 bg-primary/20" />
+                )}
+              </button>
             ))}
           </div>
         </div>
