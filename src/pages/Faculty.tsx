@@ -102,7 +102,7 @@ const Faculty = () => {
               <div className='absolute inset-0 rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary/0 via-secondary/0 to-accent/0 group-hover:from-primary/20 group-hover:via-secondary/20 group-hover:to-accent/20 transition-all duration-500 pointer-events-none z-10' />
               
               {/* Image Container with Fixed Aspect Ratio */}
-              <div className='relative aspect-[4/5] sm:aspect-[3/4] overflow-hidden bg-muted'>
+              <div className='relative aspect-[4/3] overflow-hidden bg-muted'>
                 {/* Gradient Overlay */}
                 <div className='absolute inset-0 bg-gradient-to-t from-card via-card/30 to-transparent z-10' />
                 
