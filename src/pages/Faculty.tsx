@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import api from '../api/axios';
 import Container from '../components/Container';
-import { User, Award, GraduationCap, Sparkles, BookOpen } from 'lucide-react';
+import { User, Award, Sparkles, BookOpen } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
+
+/* ================= TYPES ================= */
 
 interface Faculty {
   _id: string;
@@ -10,27 +12,34 @@ interface Faculty {
   designation: string;
   subject: string;
   experience: string;
-  image: string;
+  image?: {
+    url?: string;
+  };
 }
 
-/*  IMAGE FIX (ONLY ADDITION) */
+/* ================= IMAGE FIX ================= */
+
 const BACKEND_URL = 'http://localhost:5000';
 
-const resolveImageUrl = (image: string) => {
-  if (!image) return '/placeholder-user.jpg';
+const resolveImageUrl = (image?: { url?: string }) => {
+  if (!image?.url) return '/placeholder-user.jpg';
 
   // external image
-  if (image.startsWith('http://') || image.startsWith('https://')) {
-    return image;
+  if (image.url.startsWith('http://') || image.url.startsWith('https://')) {
+    return image.url;
   }
 
   // local backend image
-  return `${BACKEND_URL}${image}`;
+  return `${BACKEND_URL}${image.url}`;
 };
+
+/* ================= COMPONENT ================= */
 
 const Faculty = () => {
   const [faculty, setFaculty] = useState<Faculty[]>([]);
   const [loading, setLoading] = useState(true);
+
+  /* ================= API CALL (AXIOS ONLY) ================= */
 
   useEffect(() => {
     const fetchFaculty = async () => {
@@ -107,15 +116,16 @@ const Faculty = () => {
               style={{ animationDelay: `${index * 100}ms` }}
             >
               {/* Faculty Image */}
-              <div className='relative overflow-hidden'>
+              <div className='relative overflow-hidden bg-muted'>
                 <img
                   src={resolveImageUrl(member.image)}
                   alt={member.name}
-                  className='h-56 w-full object-cover transition-transform duration-500 group-hover:scale-110'
+                  className='h-56 w-full object-contain transition-transform duration-500 group-hover:scale-105'
                   onError={(e) => {
                     e.currentTarget.src = '/placeholder-user.jpg';
                   }}
                 />
+
                 <div className='absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
 
                 {/* Overlay Badge */}
@@ -166,22 +176,10 @@ const Faculty = () => {
 
           <div className='grid grid-cols-2 md:grid-cols-4 gap-6'>
             {[
-              {
-                value: '200+',
-                label: 'Faculty Members',
-              },
-              {
-                value: '85%',
-                label: 'Ph.D. Holders',
-              },
-              {
-                value: '500+',
-                label: 'Publications',
-              },
-              {
-                value: '15:1',
-                label: 'Student Ratio',
-              },
+              { value: '200+', label: 'Faculty Members' },
+              { value: '85%', label: 'Ph.D. Holders' },
+              { value: '500+', label: 'Publications' },
+              { value: '15:1', label: 'Student Ratio' },
             ].map((stat, index) => (
               <Card
                 key={index}

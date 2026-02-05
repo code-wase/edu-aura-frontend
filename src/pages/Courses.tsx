@@ -1,31 +1,36 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom'; // ✅ ADD THIS
+import { Link } from 'react-router-dom';
 import api from '../api/axios';
 import Container from '../components/Container';
 import { BookOpen, Clock, Sparkles, GraduationCap } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 
+/* ================= TYPES (FIXED) ================= */
 interface Course {
   _id: string;
   title: string;
   description: string;
   duration: string;
   price: number;
-  image: string;
+  image?: {
+    url?: string;
+  };
 }
 
+/* ================= IMAGE RESOLVER (FIXED) ================= */
 const BACKEND_URL = 'http://localhost:5000';
 
-const resolveImageUrl = (image: string) => {
-  if (!image) return '/placeholder-course.jpg';
+const resolveImageUrl = (image?: { url?: string }) => {
+  if (!image?.url) return '/placeholder-course.jpg';
 
-  if (image.startsWith('http://') || image.startsWith('https://')) {
-    return image;
+  if (image.url.startsWith('http://') || image.url.startsWith('https://')) {
+    return image.url;
   }
 
-  return `${BACKEND_URL}${image}`;
+  return `${BACKEND_URL}${image.url}`;
 };
 
+/* ================= COMPONENT ================= */
 const Courses = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
@@ -35,7 +40,7 @@ const Courses = () => {
     const fetchCourses = async () => {
       try {
         const res = await api.get('/courses');
-        setCourses(res.data.data);
+        setCourses(res.data.data || []); // ✅ SAFE
       } catch (err) {
         console.error('Courses API Error:', err);
         setError('Failed to load courses');
@@ -47,6 +52,7 @@ const Courses = () => {
     fetchCourses();
   }, []);
 
+  /* ================= LOADING ================= */
   if (loading) {
     return (
       <div className='min-h-screen pt-16 flex items-center justify-center'>
@@ -57,6 +63,7 @@ const Courses = () => {
     );
   }
 
+  /* ================= ERROR ================= */
   if (error) {
     return (
       <div className='min-h-screen pt-16 flex items-center justify-center'>
@@ -65,6 +72,7 @@ const Courses = () => {
     );
   }
 
+  /* ================= UI ================= */
   return (
     <div className='min-h-screen pt-16 relative overflow-hidden'>
       {/* HERO */}
@@ -98,6 +106,9 @@ const Courses = () => {
                   src={resolveImageUrl(course.image)}
                   alt={course.title}
                   className='h-44 w-full object-cover transition-transform duration-500 group-hover:scale-110'
+                  onError={(e) => {
+                    e.currentTarget.src = '/placeholder-course.jpg';
+                  }}
                 />
               </div>
 
@@ -122,7 +133,7 @@ const Courses = () => {
                   </p>
                 </div>
 
-                {/*  ENROLL NOW BUTTON (LINK ADDED HERE) */}
+                {/* ENROLL BUTTON */}
                 <Link to={`/courses/${course._id}`}>
                   <button className='mt-4 w-full py-2.5 rounded-lg bg-gradient-to-r from-primary to-secondary text-white font-medium transition-all duration-300 hover:shadow-glow-sm hover:scale-[1.02] shimmer'>
                     Enroll Now
