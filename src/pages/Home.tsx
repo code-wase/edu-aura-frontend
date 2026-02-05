@@ -460,13 +460,6 @@ const Home: React.FC = () => {
               </Button>
             </div>
             
-            {/* Scroll Indicator */}
-            <div className="mt-8 sm:mt-12 animate-bounce hidden md:block">
-              <div className="w-5 sm:w-6 h-8 sm:h-10 rounded-full border-2 border-muted-foreground/30 mx-auto flex items-start justify-center pt-2">
-                <div className="w-1 sm:w-1.5 h-2 sm:h-3 bg-primary rounded-full animate-pulse" />
-              </div>
-              <p className="text-xs text-muted-foreground mt-2">Scroll to explore</p>
-            </div>
           </div>
         </div>
       </section>

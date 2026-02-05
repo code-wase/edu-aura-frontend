@@ -3,6 +3,7 @@ import Navbar from './Navbar';
 import Footer from './Footer';
 import EduBot from './EduBot';
 import AdmissionModal from './AdmissionModal';
+import ScrollToTop from './ScrollToTop';
 
 const Layout = () => {
   return (
@@ -12,6 +13,7 @@ const Layout = () => {
       <Footer />
       <EduBot />
       <AdmissionModal />
+      <ScrollToTop />
     </>
   );
 };
